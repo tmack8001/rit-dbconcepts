@@ -7,9 +7,9 @@ namespace rit_dbconcepts.Types
 {
     public class Address
     {
-        String street;
-        String city;
-        String state;
-        String zip;
+        String mStreet;
+        String mCity;
+        String mState;
+        String mZip;
     }
 }
