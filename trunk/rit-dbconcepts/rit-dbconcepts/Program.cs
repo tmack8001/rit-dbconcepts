@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
-using MySql.Data.Type;
+using MySql.Data.Types;
 
 
 namespace rit_dbconcepts
@@ -20,7 +20,7 @@ namespace rit_dbconcepts
                "DATABASE=database_concepts;" + "UID=mrt9364;" +
                "PASSWORD=QzVns;";
 
-            MySqlConnection connection = new MySqlConnection(myConString);
+            MySqlConnection connection = new MySqlConnection(conString);
             MySqlCommand command = connection.CreateCommand();
             MySqlDataReader Reader;
             command.CommandText = "SELET * FROM movies";
