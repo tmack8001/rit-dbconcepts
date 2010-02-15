@@ -5,10 +5,18 @@ using System.Text;
 
 namespace rit_dbconcepts.Types
 {
-    class StockItem
+    public class StockItem
     {
         bool mInStock;
         float mPricePerDay;
         DVD mItem;
+
+        public StockItem(bool inStock, float pricePerDay, DVD item)
+        {
+            mInStock = inStock;
+            mPricePerDay = pricePerDay;
+            mItem = item;
+        }
+    
     }
 }

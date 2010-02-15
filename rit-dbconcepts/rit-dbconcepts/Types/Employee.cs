@@ -9,5 +9,12 @@ namespace rit_dbconcepts.Types
     {
         String mPosition;
         DateTime mHireDate;
+
+        public Employee(Person person, String position, DateTime hireDate)
+        :   base(person)
+        {
+            mPosition = position;
+            mHireDate = hireDate;
+        }
     }
 }

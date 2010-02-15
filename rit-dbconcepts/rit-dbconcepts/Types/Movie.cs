@@ -9,8 +9,17 @@ namespace rit_dbconcepts.Types
     {
         int mId;
         String mTitle;
-        String mGenre;
         DateTime mDistroDate;
+        LinkedList<String> mGenres;
         LinkedList<CastCrewMember> mCastCrew;
+
+        public Movie(int id, String title, DateTime distroDate, String[] genres, CastCrewMember[] castCrew)
+        {
+            mId = id;
+            mTitle = title;
+            mDistroDate = distroDate;
+            mGenres = new LinkedList<string>(genres);
+            mCastCrew = new LinkedList<CastCrewMember>(castCrew);
+        }
     }
 }

@@ -5,10 +5,17 @@ using System.Text;
 
 namespace rit_dbconcepts.Types
 {
-    class DVD
+    public class DVD
     {
-        int dvdId;
+        int mDvdId;
         String mFormat;
         DateTime mReleaseDate;
+
+        public DVD(int id, String format, DateTime releaseDate)
+        {
+            mDvdId = id;
+            mFormat = format;
+            mReleaseDate = releaseDate;
+        }
     }
 }

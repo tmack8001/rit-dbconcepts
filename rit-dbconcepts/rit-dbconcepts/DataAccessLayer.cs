@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using MySql.Data.MySqlClient;
 using MySql.Data.Types;
+
 using rit_dbconcepts.Types;
 
 namespace rit_dbconcepts
@@ -43,7 +45,7 @@ namespace rit_dbconcepts
                 String title = Reader.GetString(1);
                 String genre = Reader.GetString(2);
                 String[] genres = genre.Split(',');
-                retList.Add(new Movie(id, title, genres));
+                //retList.Add(new Movie(id, title, genres));
             }
             connection.Close();
             return retList;
@@ -69,7 +71,7 @@ namespace rit_dbconcepts
                 String title = Reader.GetString(1);
                 String genre = Reader.GetString(2);
                 String[] genres = genre.Split(',');
-                retList.Add(new Movie(id, title, genres));
+                //retList.Add(new Movie(id, title, genres));
             }
             connection.Close();
             return retList;
@@ -95,7 +97,7 @@ namespace rit_dbconcepts
                 String title = Reader.GetString(1);
                 String genre = Reader.GetString(2);
                 String[] genres = genre.Split(',');
-                retList.Add(new Movie( id, title, genres));
+                //retList.Add(new Movie( id, title, genres));
             }
             connection.Close();
             return retList;

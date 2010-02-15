@@ -12,5 +12,15 @@ namespace rit_dbconcepts.Types
         DateTime mDateOpened;
         LinkedList<Employee> mEmployees;
         LinkedList<StockItem> mInventory;
+
+        public Store(int id, Address address, DateTime dateOpened, Employee[] employees,
+            StockItem[] inventory)
+        {
+            mStoreId = id;
+            mAddress = address;
+            mDateOpened = dateOpened;
+            mEmployees = new LinkedList<Employee>(employees);
+            mInventory = new LinkedList<StockItem>(inventory);
+        }
     }
 }
