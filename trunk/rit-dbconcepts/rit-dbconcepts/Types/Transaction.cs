@@ -5,10 +5,17 @@ using System.Text;
 
 namespace rit_dbconcepts.Types
 {
-    class Transaction
+    public class Transaction
     {
         int mTransId;
         Customer mCustomer;
         DVD mDvd;
+
+        public Transaction(int id, Customer customer, DVD dvd)
+        {
+            mTransId = id;
+            mCustomer = customer;
+            mDvd = dvd;
+        }
     }
 }

@@ -8,5 +8,11 @@ namespace rit_dbconcepts.Types
     public class CastCrewMember : Person
     {
         String mJob;
+
+        CastCrewMember(Person person, String job)
+        :   base(person)
+        {
+            mJob = job;
+        }
     }
 }

@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataAccessLayer.cs" />
     <Compile Include="Types\CastCrewMember.cs" />
     <Compile Include="Types\Customer.cs" />
     <Compile Include="Types\Employee.cs" />
