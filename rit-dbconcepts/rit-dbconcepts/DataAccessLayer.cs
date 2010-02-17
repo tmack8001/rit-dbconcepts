@@ -581,22 +581,28 @@ namespace rit_dbconcepts
 
         public int insertDvd(DVD dvd)
         {
-            /*String queryStr = "INSERT INTO dvd" +
-                " ( street, city, state, zipcode, date_opened )" +
-                " VALUES ( " + store.Street + ", '" + store.City + "'," +
-                " '" + store.State + "', '" + store.Zipcode + "'," +
-                " '" + store.DateOpened + "' )";
+            String queryStr = "INSERT INTO dvd" +
+                " ( format ) VALUES ( " + dvd.Format + "' )";
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
 
             connection.Open();
             command.ExecuteNonQuery();
+            int dvd_id = (int)command.LastInsertedId;
 
-            return command.LastInsertedId();*/
+            queryStr = "INSERT INTO dvd_movie" +
+                " ( movie_id, dvd_id, release_date ) " +
+                " VALUES ( " + dvd.Movie.Id + ", " + dvd_id + ", " + dvd.ReleaseDate + " )";
+            
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+            command.ExecuteNonQuery();
 
-            return 0;
+            connection.Close();
+            return dvd_id;
         }
 
+       public int 
     }
 }
