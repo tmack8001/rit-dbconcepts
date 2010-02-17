@@ -116,7 +116,7 @@ namespace rit_dbconcepts
         {
             List<Customer> retList = new List<Customer>();
 
-            String queryStr = "SELECT p.id, p.first_name, p.last_name, c.street, c.city," +
+            String queryStr = "SELECT p.person_id, p.first_name, p.last_name, c.street, c.city," +
                 " c.state, c.zipcode, c.card_number, c.exp_date" +
                 " FROM person as p" +
                 " OUTER JOIN customer as c ON c.person_id = p.person_id";
@@ -136,11 +136,11 @@ namespace rit_dbconcepts
         {
             List<Customer> retList = new List<Customer>();
 
-            String queryStr = "SELECT p.id, p.first_name, p.last_name, c.street, c.city," +
+            String queryStr = "SELECT p.person_id, p.first_name, p.last_name, c.street, c.city," +
                 " c.state, c.zipcode, c.card_number, c.exp_date" +
                 " FROM person as p" +
                 " OUTER JOIN customer as c ON c.person_id = p.person_id" +
-                " WHERE p.id = " + id;
+                " WHERE p.person_id = " + id;
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
@@ -180,7 +180,7 @@ namespace rit_dbconcepts
         {
             List<Employee> retList = new List<Employee>();
 
-            String queryStr = "SELECT p.id, p.first_name, p.last_name, e.position, e.hire_date" +
+            String queryStr = "SELECT p.person_id, p.first_name, p.last_name, e.position, e.hire_date" +
                 " FROM person as p" +
                 " OUTER JOIN employee as e ON e.person_id = p.person_id";
 
@@ -284,7 +284,7 @@ namespace rit_dbconcepts
             String queryStr = "SELECT s.store_id, s.street, s.city, s.state" +
                 " s.zipcode, s.date_opened" +
                 " FROM store as s" +
-                " WHERE s.id = " + id;
+                " WHERE s.store_id = " + id;
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
@@ -363,7 +363,7 @@ namespace rit_dbconcepts
         {
             List<CastCrewMember> retList = new List<CastCrewMember                >();
 
-            String queryStr = "SELECT p.id, p.first_name, p.last_name, cac.movie_id, cac.job" +
+            String queryStr = "SELECT p.person_id, p.first_name, p.last_name, cac.movie_id, cac.job" +
                 " FROM person as p" +
                 " RIGHT OUTER JOIN cast_and_crew as cac ON cac.cac_id = p.person_id" +
                 " WHERE p.person_id = " + id;
@@ -383,7 +383,7 @@ namespace rit_dbconcepts
         {
             List<CastCrewMember> retList = new List<CastCrewMember>();
 
-            String queryStr = "SELECT p.id, p.first_name, p.last_name, cac.movie_id, cac.job" +
+            String queryStr = "SELECT p.person_id, p.first_name, p.last_name, cac.movie_id, cac.job" +
                 " FROM person as p" +
                 " RIGHT OUTER JOIN cast_and_crew as cac ON cac.cac_id = p.person_id" +
                 " WHERE cac.movie_id = " + id;
