@@ -17,6 +17,24 @@ namespace rit_dbconcepts.Types
             mPricePerDay = pricePerDay;
             mItem = item;
         }
+
+        public bool IsInStock
+        {
+            get { return mInStock; }
+            set { mInStock = value; }
+        }
+
+        public float PricePerDay
+        {
+            get { return mPricePerDay; }
+            set { mPricePerDay = value; }
+        }
+
+        public DVD Item
+        {
+            get { return mItem; }
+            set { mItem = value; }
+        }
     
     }
 }

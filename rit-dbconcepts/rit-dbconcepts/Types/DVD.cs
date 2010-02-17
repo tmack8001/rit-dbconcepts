@@ -17,5 +17,23 @@ namespace rit_dbconcepts.Types
             mFormat = format;
             mReleaseDate = releaseDate;
         }
+
+        public int Id
+        {
+            get { return mDvdId; }
+            set { mDvdId = value; }
+        }
+
+        public String Format
+        {
+            get { return mFormat; }
+            set { mFormat = value; }
+        }
+
+        public DateTime ReleaseDate
+        {
+            get { return mReleaseDate; }
+            set { mReleaseDate = value; }
+        }
     }
 }

@@ -92,6 +92,7 @@
     <Compile Include="Types\StockItem.cs" />
     <Compile Include="Types\Store.cs" />
     <Compile Include="Types\Transaction.cs" />
+    <Compile Include="Types\TypeFactory.cs" />
     <Compile Include="View.cs">
       <SubType>Form</SubType>
     </Compile>

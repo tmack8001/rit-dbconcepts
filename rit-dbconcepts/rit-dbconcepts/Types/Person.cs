@@ -24,5 +24,23 @@ namespace rit_dbconcepts.Types
             mFirstName = other.mFirstName;
             mLastName = other.mLastName;
         }
+
+        public int Id
+        {
+            get { return mPersonId; }
+            set { mPersonId = value; }
+        }
+
+        public String FirstName
+        {
+            get { return mFirstName; }
+            set { mFirstName = value; }
+        }
+
+        public String LastName
+        {
+            get { return mLastName; }
+            set { mLastName = value; }
+        }
     }
 }

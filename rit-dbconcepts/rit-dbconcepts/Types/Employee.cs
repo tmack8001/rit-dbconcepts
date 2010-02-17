@@ -16,5 +16,17 @@ namespace rit_dbconcepts.Types
             mPosition = position;
             mHireDate = hireDate;
         }
+
+        public String Position
+        {
+            get { return mPosition; }
+            set { mPosition = value; }
+        }
+
+        public DateTime HireDate
+        {
+            get { return mHireDate; }
+            set { mHireDate = value; }
+        }
     }
 }
