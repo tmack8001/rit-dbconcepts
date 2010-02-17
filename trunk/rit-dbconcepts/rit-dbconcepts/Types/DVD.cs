@@ -8,6 +8,7 @@ namespace rit_dbconcepts.Types
     public class DVD
     {
         int mDvdId;
+        Movie mMovie;
         String mFormat;
         DateTime mReleaseDate;
 
@@ -22,6 +23,12 @@ namespace rit_dbconcepts.Types
         {
             get { return mDvdId; }
             set { mDvdId = value; }
+        }
+
+        public Movie Movie
+        {
+            get { return mMovie; }
+            set { mMovie = value; }
         }
 
         public String Format
