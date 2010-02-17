@@ -18,5 +18,23 @@ namespace rit_dbconcepts.Types
             mExpDate = cardExpDate;
             mBillAddress = billAddress;
         }
+
+        public String CardNumber
+        {
+            get { return mCardNumber; }
+            set { mCardNumber = value; }
+        }
+
+        public DateTime ExpDate
+        {
+            get { return mExpDate; }
+            set { mExpDate = value; }
+        }
+
+        public Address BillAddress
+        {
+            get { return mBillAddress; }
+            set { mBillAddress = value; }
+        }
     }
 }

@@ -17,5 +17,23 @@ namespace rit_dbconcepts.Types
             mCustomer = customer;
             mDvd = dvd;
         }
+
+        public int Id
+        {
+            get { return mTransId; }
+            set { mTransId = value; }
+        }
+
+        public Customer Customer
+        {
+            get { return mCustomer; }
+            set { mCustomer = value; }
+        }
+
+        public DVD DVD
+        {
+            get { return mDvd; }
+            set { mDvd = value; }
+        }
     }
 }

@@ -38,9 +38,10 @@ namespace rit_dbconcepts
 
             connection.Open();
             Reader = command.ExecuteReader();
-
+            
             while (Reader.Read())
             {
+                
                 int id = Reader.GetInt16(0);
                 String title = Reader.GetString(1);
                 String genre = Reader.GetString(2);
@@ -466,14 +467,14 @@ namespace rit_dbconcepts
 
         public void insertMovie(Movie movie, Publisher publisher)
         {
-            insertMovie(movie.Title, String.Join(",", movie.Genres));
+            //insertMovie(movie.Title, String.Join(",", movie.Genres));
         }
 
         public int insertMovie(Movie movie)
         {
             String queryStr = "INSERT INTO movies" +
                 " ( title, genre ) VALUES ( '" + movie.Title + "'," +
-                " '" + String.Join(",", movie.Genres) + "'";
+                " '" + String.Join(",", movie.Genres.ToArray<String>()) + "'";
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
@@ -503,9 +504,9 @@ namespace rit_dbconcepts
         {
             String queryStr = "INSERT INTO customer" +
                 " ( person_id, street, city, state, zipcode, card_number, exp_date )" +
-                " VALUES ( " + customer.Id + ", '" + customer.Street + "'," +
-                " '" + customer.City + "', '" + customer.State + "'," +
-                " '" + customer.Zipcode + "', '" + customer.CardNumber + "'," +
+                " VALUES ( " + customer.Id + ", '" + customer.BillAddress.Street + "'," +
+                " '" + customer.BillAddress.City + "', '" + customer.BillAddress.State + "'," +
+                " '" + customer.BillAddress.ZipCode + "', '" + customer.CardNumber + "'," +
                 " '" + customer.ExpDate + "' )";
 
             command = connection.CreateCommand();
@@ -545,9 +546,9 @@ namespace rit_dbconcepts
         {
             String queryStr = "INSERT INTO publisher" +
                 " ( name, street, city, state, zipcode, phone )" +
-                " VALUES ( " + publisher.Name + ", '" + publisher.Street + "'," +
-                " '" + publisher.City + "', '" + publisher.State + "'," +
-                " '" + publisher.Zipcode + "', '" + publisher.Phone + "' )";
+                " VALUES ( " + publisher.Name + ", '" + publisher.Address.Street + "'," +
+                " '" + publisher.Address.City + "', '" + publisher.Address.State + "'," +
+                " '" + publisher.Address.ZipCode + "', '" + publisher.PhoneNumber + "' )";
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
@@ -565,8 +566,8 @@ namespace rit_dbconcepts
         {
             String queryStr = "INSERT INTO store" +
                 " ( street, city, state, zipcode, date_opened )" +
-                " VALUES ( " + store.Street + ", '" + store.City + "'," +
-                " '" + store.State + "', '" + store.Zipcode + "'," +
+                " VALUES ( " + store.Address.Street + ", '" + store.Address.City + "'," +
+                " '" + store.Address.State + "', '" + store.Address.ZipCode + "'," +
                 " '" + store.DateOpened + "' )";
 
             command = connection.CreateCommand();
@@ -593,6 +594,8 @@ namespace rit_dbconcepts
             command.ExecuteNonQuery();
 
             return command.LastInsertedId();*/
+
+            return 0;
         }
 
     }

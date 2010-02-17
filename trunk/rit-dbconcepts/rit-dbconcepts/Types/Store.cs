@@ -22,5 +22,35 @@ namespace rit_dbconcepts.Types
             mEmployees = new LinkedList<Employee>(employees);
             mInventory = new LinkedList<StockItem>(inventory);
         }
+
+        public int StoreId
+        {
+            get { return mStoreId; }
+            set { mStoreId = value; }
+        }
+
+        public Address Address
+        {
+            get { return mAddress; }
+            set { mAddress = value; }
+        }
+
+        public DateTime DateOpened
+        {
+            get { return mDateOpened; }
+            set { mDateOpened = value; }
+        }
+
+        public LinkedList<Employee> Employees
+        {
+            get { return mEmployees; }
+            set { mEmployees = value; }
+        }
+
+        public LinkedList<StockItem> Inventory
+        {
+            get { return mInventory; }
+            set { mInventory = value; }
+        }
     }
 }

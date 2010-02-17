@@ -9,10 +9,16 @@ namespace rit_dbconcepts.Types
     {
         String mJob;
 
-        CastCrewMember(Person person, String job)
+        public CastCrewMember(Person person, String job)
         :   base(person)
         {
             mJob = job;
+        }
+
+        public String Job
+        {
+            get { return mJob; }
+            set { mJob = value; }
         }
     }
 }

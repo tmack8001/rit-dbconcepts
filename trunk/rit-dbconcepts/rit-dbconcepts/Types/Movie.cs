@@ -21,5 +21,33 @@ namespace rit_dbconcepts.Types
             mGenres = new LinkedList<string>(genres);
             mCastCrew = new LinkedList<CastCrewMember>(castCrew);
         }
+
+        public int Id
+        {
+            get { return mId; }
+            set { mId = value; }
+        }
+
+        public String Title
+        {
+            get { return mTitle; }
+            set { mTitle = value; }
+        }
+
+        public DateTime DistroDate
+        {
+            get { return mDistroDate; }
+            set { mDistroDate = value; }
+        }
+
+        public LinkedList<String> Genres
+        {
+            get { return mGenres; }
+        }
+
+        public LinkedList<CastCrewMember> CastCrew
+        {
+            get { return mCastCrew; }
+        }
     }
 }

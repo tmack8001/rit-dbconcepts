@@ -19,5 +19,28 @@ namespace rit_dbconcepts.Types
             mPhoneNumber = phoneNumber;
             mPublishedMovies = new LinkedList<Movie>(publishedMovies);
         }
+
+        public String Name
+        {
+            get { return mName; }
+            set { mName = value; }
+        }
+
+        public Address Address
+        {
+            get { return mAddress; }
+            set { mAddress = value; }
+        }
+
+        public String PhoneNumber
+        {
+            get { return mPhoneNumber; }
+            set { mPhoneNumber = value; }
+        }
+
+        public LinkedList<Movie> PublishedMovies
+        {
+            get { return mPublishedMovies; }
+        }
     }
 }
