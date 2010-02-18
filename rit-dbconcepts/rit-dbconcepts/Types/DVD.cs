@@ -19,6 +19,14 @@ namespace rit_dbconcepts.Types
             mReleaseDate = releaseDate;
         }
 
+        public DVD(int id, Movie movie, String format, DateTime releaseDate)
+        {
+            mDvdId = id;
+            mMovie = movie;
+            mFormat = format;
+            mReleaseDate = releaseDate;
+        }
+
         public int Id
         {
             get { return mDvdId; }
