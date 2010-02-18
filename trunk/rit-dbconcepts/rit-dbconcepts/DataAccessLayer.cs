@@ -133,6 +133,8 @@ namespace rit_dbconcepts
             //some function in TypeFactor(Reader);
             connection.Close();
 
+            retVal.CastCrew = new LinkedList<CastCrewMember>(getCastByMovieId(retVal.Id));
+
             return retVal;
         }
 
