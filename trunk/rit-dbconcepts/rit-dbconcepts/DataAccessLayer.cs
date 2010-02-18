@@ -25,12 +25,6 @@ namespace rit_dbconcepts
             connection = new MySqlConnection(conString);
         }
 
-        public List<Object> getCustomQuery(String query, Type objectType)
-        {
-            // do logic on the passed custom query information
-            return null;
-        }
-
         public List<Movie> getMovies()
         {
             List<Movie> retList = new List<Movie>();
@@ -51,7 +45,6 @@ namespace rit_dbconcepts
             }
 
             connection.Close();
-
             return retList;
         }
 
@@ -483,14 +476,14 @@ namespace rit_dbconcepts
 
         /** Cast and Crew */
 
-        public List<CastCrewMember> getCastById(int id)
+        public CastCrewMember getCastById(int id)
         {
-            List<CastCrewMember> retList = new List<CastCrewMember                >();
+            CastCrewMember retVal = null;
 
             String queryStr = "SELECT p.person_id, p.first_name, p.last_name, cac.movie_id, cac.job" +
                 " FROM person as p" +
                 " RIGHT OUTER JOIN cast_and_crew as cac ON cac.cac_id = p.person_id" +
-                " WHERE p.person_id = " + id;
+                " WHERE p.person_id = " + id + " LIMIT 1";
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
@@ -500,7 +493,7 @@ namespace rit_dbconcepts
 
             //some function in TypeFactor(Reader);
             connection.Close();
-            return retList;
+            return retVal;
         }
 
         public List<CastCrewMember> getCastByMovieId(int id)
@@ -558,7 +551,7 @@ namespace rit_dbconcepts
 
         public DVD getDvdById(int id)
         {
-            DVD retVal;
+            DVD retVal = null;
 
             String queryStr = "SELECT d.dvd_id, d.format, m.movie_id, dm.release_date" +
                 " FROM dvd as d, dvd_movie as dm" +
@@ -634,94 +627,205 @@ namespace rit_dbconcepts
             return retList;
         }
 
-        /** Literal INSERTS */
+        public Publisher getPublishersByName(String name)
+        {
+            Publisher retVal = null;
+
+            String queryStr = "SELECT p.name, p.street, p.city, p.state, p.zipcode, p.phone" +
+                " FROM publisher as p WHERE p.name = '" + name + "'";
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            Reader = command.ExecuteReader();
+
+            //some function in TypeFactor(Reader);
+            connection.Close();
+            return retVal;
+        }
         
         /** Object INSERTS */
 
-        public void insertMovie(Movie movie, Publisher publisher)
+        public int insertMovie(Movie movie, Publisher publisher)
         {
-            //insertMovie(movie.Title, String.Join(",", movie.Genres));
+            int retVal = movie.Id;
+            if (retVal >= 0)
+            {
+                updateMovie(movie, publisher);
+            }
+            else
+            {
+                retVal = insertMovie(movie);
+                insertPublisher(publisher, movie);
+            }
+            return retVal;
         }
 
         public int insertMovie(Movie movie)
         {
-            String queryStr = "INSERT INTO movies" +
-                " ( title, genre ) VALUES ( '" + movie.Title + "'," +
-                " '" + String.Join(",", movie.Genres.ToArray<String>()) + "'";
+            int retVal = movie.Id;
+            if (retVal >= 0)
+            {
+                updateMovie(movie);
+            }
+            else
+            {
+                String queryStr = "INSERT INTO movies" +
+                    " ( title, genre ) VALUES ( '" + movie.Title + "'," +
+                    " '" + String.Join(",", movie.Genres.ToArray<String>()) + "'";
 
-            command = connection.CreateCommand();
-            command.CommandText = queryStr;
+                command = connection.CreateCommand();
+                command.CommandText = queryStr;
 
-            connection.Open();
-            command.ExecuteNonQuery();
+                connection.Open();
+                command.ExecuteNonQuery();
+                retVal = (int)command.LastInsertedId;
 
-            return (int)command.LastInsertedId;
+                connection.Close();
+            }
+            return retVal;
+        }
+
+        private void updateMovie(Movie movie)
+        {
+            throw new NotImplementedException();
         }
 
         public int insertPerson(Person person)
         {
-            String queryStr = "INSERT INTO person" +
-                " ( first_name, last_name ) VALUES ( '" + person.FirstName + "'," +
-                " '" + person.LastName + "'";
+            int retVal = person.Id;
+            if (retVal >= 0)
+            {
+                updatePerson(person);
+            }
+            else
+            {
+                String queryStr = "INSERT INTO person" +
+                    " ( first_name, last_name ) VALUES ( '" + person.FirstName + "'," +
+                    " '" + person.LastName + "'";
 
-            command = connection.CreateCommand();
-            command.CommandText = queryStr;
+                command = connection.CreateCommand();
+                command.CommandText = queryStr;
 
-            connection.Open();
-            command.ExecuteNonQuery();
+                connection.Open();
+                command.ExecuteNonQuery();
+                retVal = (int)command.LastInsertedId;
 
-            return (int)command.LastInsertedId;
+                connection.Close();
+            }
+            return retVal;
+        }
+
+        private void updatePerson(Person person)
+        {
+            throw new NotImplementedException();
         }
 
         public int insertCustomer(Customer customer)
         {
-            String queryStr = "INSERT INTO customer" +
-                " ( person_id, street, city, state, zipcode, card_number, exp_date )" +
-                " VALUES ( " + customer.Id + ", '" + customer.BillAddress.Street + "'," +
-                " '" + customer.BillAddress.City + "', '" + customer.BillAddress.State + "'," +
-                " '" + customer.BillAddress.ZipCode + "', '" + customer.CardNumber + "'," +
-                " '" + customer.ExpDate + "' )";
+            int retVal = customer.Id;
+            if (retVal >= 0)
+            {
+                updateCustomer(customer);
+            }
+            else
+            {
+                insertPerson(customer);
 
-            command = connection.CreateCommand();
-            command.CommandText = queryStr;
+                String queryStr = "INSERT INTO customer" +
+                    " ( person_id, street, city, state, zipcode, card_number, exp_date )" +
+                    " VALUES ( " + customer.Id + ", '" + customer.BillAddress.Street + "'," +
+                    " '" + customer.BillAddress.City + "', '" + customer.BillAddress.State + "'," +
+                    " '" + customer.BillAddress.ZipCode + "', '" + customer.CardNumber + "'," +
+                    " '" + customer.ExpDate + "' )";
 
-            connection.Open();
-            command.ExecuteNonQuery();
+                command = connection.CreateCommand();
+                command.CommandText = queryStr;
 
-            return (int)command.LastInsertedId;
+                connection.Open();
+                command.ExecuteNonQuery();
+                retVal = (int)command.LastInsertedId;
+
+                connection.Close();
+            }
+            return retVal;
         }
 
-        public void insertEmployee(Employee employee, Store store)
+        private void updateCustomer(Customer customer)
         {
-            String queryStr = "INSERT INTO employee_store" +
-                " ( store_id, employee_id )" +
-                " VALUES ( '" + store.StoreId + "', " + employee.Id + " )";
+            throw new NotImplementedException();
+        }
 
-            command = connection.CreateCommand();
-            command.CommandText = queryStr;
+        public int insertEmployee(Employee employee, Store store)
+        {
+            int retVal = employee.Id;
+            if (retVal >= 0)
+            {
+                updateEmployee(employee, store);
+            }
+            else
+            {
+                employee.Id = insertPerson(employee);
+                insertEmployee(employee);
+                
+                String queryStr = "INSERT INTO employee_store" +
+                    " ( store_id, employee_id )" +
+                    " VALUES ( '" + store.StoreId + "', " + employee.Id + " )";
 
-            connection.Open();
-            command.ExecuteNonQuery();
+                command = connection.CreateCommand();
+                command.CommandText = queryStr;
+
+                connection.Open();
+                command.ExecuteNonQuery();
+                retVal = employee.Id;
+
+                connection.Close();
+            }
+            return retVal;
+        }
+
+        private void updateEmployee(Employee employee, Store store)
+        {
+            throw new NotImplementedException();
         }
 
         public int insertEmployee(Employee employee)
         {
-            String queryStr = "INSERT INTO employee" +
-                " ( person_id, position, hire_date )" +
-                " VALUES ( " + employee.Id + ", '" + employee.Position + "'," +
-                " '" + employee.HireDate + "' )";
+            int retVal = employee.Id;
+            if (retVal >= 0)
+            {
+                updateEmployee(employee);
+            }
+            else
+            {
+                employee.Id = insertPerson(employee);
 
-            command = connection.CreateCommand();
-            command.CommandText = queryStr;
+                String queryStr = "INSERT INTO employee" +
+                    " ( person_id, position, hire_date )" +
+                    " VALUES ( " + employee.Id + ", '" + employee.Position + "'," +
+                    " '" + employee.HireDate + "' )";
 
-            connection.Open();
-            command.ExecuteNonQuery();
+                command = connection.CreateCommand();
+                command.CommandText = queryStr;
 
-            return (int)command.LastInsertedId;
+                connection.Open();
+                command.ExecuteNonQuery();
+                retVal = employee.Id;
+
+                connection.Close();
+            }
+            return retVal;
         }
 
-        public void insertPublisher(Publisher publisher, Movie movie)
+        private void updateEmployee(Employee employee)
         {
+            throw new NotImplementedException();
+        }
+
+        public String insertPublisher(Publisher publisher, Movie movie)
+        {
+            publisher.Name = insertPublisher(publisher);
             String queryStr = "INSERT INTO publisher_movie" +
                 " ( publisher_name, movie_id, distribution_date )" +
                 " VALUES ( '" + publisher.Name + "', " + movie.Id + "," +
@@ -729,9 +833,18 @@ namespace rit_dbconcepts
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
-
+            
             connection.Open();
             command.ExecuteNonQuery();
+
+            connection.Close();
+
+            return publisher.Name;
+        }
+
+        private void updatePublisher(Publisher publisher, Movie movie)
+        {
+            throw new NotImplementedException();
         }
 
         public String insertPublisher(Publisher publisher)
@@ -747,76 +860,117 @@ namespace rit_dbconcepts
 
             connection.Open();
             command.ExecuteNonQuery();
-
-            if (command.LastInsertedId != -1)
-                return null;
+            
+            connection.Close();
 
             return publisher.Name;
         }
 
         public int insertStore(Store store)
         {
-            String queryStr = "INSERT INTO store" +
-                " ( street, city, state, zipcode, date_opened )" +
-                " VALUES ( " + store.Address.Street + ", '" + store.Address.City + "'," +
-                " '" + store.Address.State + "', '" + store.Address.ZipCode + "'," +
-                " '" + store.DateOpened + "' )";
+            int retVal = store.StoreId;
+            if (retVal >= 0)
+            {
+                updateStore(store);
+            }
+            else
+            {
+                String queryStr = "INSERT INTO store" +
+                    " ( street, city, state, zipcode, date_opened )" +
+                    " VALUES ( " + store.Address.Street + ", '" + store.Address.City + "'," +
+                    " '" + store.Address.State + "', '" + store.Address.ZipCode + "'," +
+                    " '" + store.DateOpened + "' )";
 
-            command = connection.CreateCommand();
-            command.CommandText = queryStr;
+                command = connection.CreateCommand();
+                command.CommandText = queryStr;
+                
+                connection.Open();
+                command.ExecuteNonQuery();
+                retVal = (int)command.LastInsertedId;
 
-            connection.Open();
-            command.ExecuteNonQuery();
+                connection.Close();
+            }
+            return retVal;
+        }
 
-            return (int)command.LastInsertedId;
+        private void updateStore(Store store)
+        {
+            throw new NotImplementedException();
         }
 
         public int insertDvd(DVD dvd)
         {
-            String queryStr = "INSERT INTO dvd" +
-                " ( format ) VALUES ( " + dvd.Format + "' )";
+            int retVal = dvd.Id;
+            if (retVal >= 0)
+            {
+                updateDvd(dvd);
+            }
+            else
+            {
+                String queryStr = "INSERT INTO dvd" +
+                    " ( format ) VALUES ( " + dvd.Format + "' )";
 
-            command = connection.CreateCommand();
-            command.CommandText = queryStr;
+                command = connection.CreateCommand();
+                command.CommandText = queryStr;
 
-            connection.Open();
-            command.ExecuteNonQuery();
-            int dvd_id = (int)command.LastInsertedId;
+                connection.Open();
+                command.ExecuteNonQuery();
+                dvd.Id = (int)command.LastInsertedId;
 
-            queryStr = "INSERT INTO dvd_movie" +
-                " ( movie_id, dvd_id, release_date ) " +
-                " VALUES ( " + dvd.Movie.Id + ", " + dvd_id + ", " + dvd.ReleaseDate + " )";
-            
-            command = connection.CreateCommand();
-            command.CommandText = queryStr;
-            command.ExecuteNonQuery();
+                queryStr = "INSERT INTO dvd_movie" +
+                    " ( movie_id, dvd_id, release_date ) " +
+                    " VALUES ( " + dvd.Movie.Id + ", " + dvd.Id + ", " + dvd.ReleaseDate + " )";
 
-            connection.Close();
-            return dvd_id;
+                command = connection.CreateCommand();
+                command.CommandText = queryStr;
+                command.ExecuteNonQuery();
+
+                connection.Close();
+            }
+            return retVal;
+        }
+
+        private void updateDvd(DVD dvd)
+        {
+            throw new NotImplementedException();
         }
 
         public int insertTransaction(Transaction transaction)
         {
-            String queryStr = "INSERT INTO transaction" +
-                " ( trans_id, dvd_id, cuatomer_id, trans_date  )" +
-                " VALUES ( " + transaction.Id + ", " + transaction.DVD.Id + "," + 
-                " " + transaction.Customer.Id + "' )";
+            int retVal = transaction.Id;
+            if (retVal >= 0)
+            {
+                updateTransaction(transaction);
+            }
+            else
+            {
+                String queryStr = "INSERT INTO transaction" +
+                    " ( trans_id, dvd_id, cuatomer_id, trans_date  )" +
+                    " VALUES ( " + transaction.Id + ", " + transaction.DVD.Id + "," +
+                    " " + transaction.Customer.Id + "' )";
 
-            command = connection.CreateCommand();
-            command.CommandText = queryStr;
+                command = connection.CreateCommand();
+                command.CommandText = queryStr;
 
-            connection.Open();
-            command.ExecuteNonQuery();
-            
-            connection.Close();
-            return (int)command.LastInsertedId;
+                connection.Open();
+                command.ExecuteNonQuery();
+                transaction.Id = (int)command.LastInsertedId;
+
+                connection.Close();
+            }
+            return retVal;
+        }
+
+        private void updateTransaction(Transaction transaction)
+        {
+            throw new NotImplementedException();
         }
 
         public void insertInventory(StockItem inventory, Store store)
         {
             String queryStr = "INSERT INTO inventory" +
                 " ( store_id, in_stock, price_per_day, dvd_id ) " +
-                " VALUES ( " + store.StoreId + ", " + inventory.IsInStock + ", " + 
+                " VALUES ( " + store.StoreId + ", " + inventory.IsInStock + ", " +
                 inventory.PricePerDay + ", " + inventory.Item.Id + " )";
 
             command = connection.CreateCommand();
@@ -828,12 +982,30 @@ namespace rit_dbconcepts
             connection.Close();
         }
 
+        /** UPDATE STATEMENTS */
+
+        public void updateCastAndCrew(CastCrewMember cast, Movie movie)
+        {
+            String queryStr = "UPDATE cast_and_crew" +
+                " SET job = " + cast.Job +
+                " WHERE cac_id = " + cast.Id + " AND movie_id = " + movie.Id;
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            connection.Close();
+        }
+
+        private object updateMovie(Movie movie, Publisher publisher)
+        {
+            throw new NotImplementedException();
+        }
+        
         public void updateInventory(StockItem inventory, Store store)
         {
-            /* UPDATE table_name
-            SET column1=value, column2=value2,...
-            WHERE some_column=some_value*/
-
             String queryStr = "UPDATE inventory" +
                 " SET store_id = "  + store.StoreId + ", in_stock = " + inventory.IsInStock + ", " +
                 " price_per_day = " + inventory.PricePerDay +
@@ -848,7 +1020,6 @@ namespace rit_dbconcepts
 
             connection.Close();
         }
-
 
     }
 }
