@@ -267,7 +267,7 @@ namespace rit_dbconcepts
 				} 
 				
 				foreach( Movie m in moviesInDb){
-					results.Items.Add( m.ToString() );
+					results.Items.Add(m);
 				}
 			
             };
@@ -279,7 +279,7 @@ namespace rit_dbconcepts
 			this.infoButton.Text = "Info";
 			this.infoButton.Enabled = false;
 			this.infoButton.Click += delegate(object sender, EventArgs e) { 
-				foreach( String cur in results.SelectedItems ){
+				foreach( Movie cur in results.SelectedItems ){
 					infoPanel ("Movie", cur);
 				}
 			};
@@ -374,7 +374,13 @@ namespace rit_dbconcepts
         		
         		
         	this.custSubmit.Click += delegate(object sender, EventArgs e) {
-                
+                String[] names = customer.Text.Trim().Split();
+
+                custResults.Items.Clear();
+                foreach (Customer cust in DAL.getCustomersByFullName(names[0], names[1]))
+                {
+                    custResults.Items.Add(cust);
+                }
 				
             };
 			
@@ -385,7 +391,7 @@ namespace rit_dbconcepts
         	this.custInfoButton.Text = "Info";
 			this.custInfoButton.Enabled = false;
         	this.custInfoButton.Click += delegate(object sender, EventArgs e) {
-                foreach( String sel in custResults.Items){
+                foreach( Customer sel in custResults.SelectedItems){
 					infoPanel("Customer", sel); 
 				}
             };
@@ -435,7 +441,7 @@ namespace rit_dbconcepts
             return CusInfo;
         }
 
-        public void infoPanel (String title, String selection)
+        public void infoPanel (String title, Object selection)
         {
 
             char[] delim = new char[ 2];
@@ -444,7 +450,7 @@ namespace rit_dbconcepts
 			
 			this.info = new Form ();
         	this.info.ClientSize = new Size (500, 610);
-        	this.info.Text = selection;
+        	this.info.Text = title;
     
 			Label infoPanelHeader = new Label ();
         	infoPanelHeader.Text = title + " Info";
@@ -499,9 +505,11 @@ namespace rit_dbconcepts
 			
 			if (title.ToLower ().Equals ("movie")) 
 			{
+                Movie data = (Movie)selection;
+
         		L1.Text = "Title";
         		info.Controls.Add (L1);
-        		T1.Text = selection;
+        		T1.Text = data.Title;
         		info.Controls.Add (T1);
     
 				L2.Text = "StoreId";
@@ -509,6 +517,7 @@ namespace rit_dbconcepts
         		info.Controls.Add (T2);
    
 				L3.Text = "Release Date (DD/MM/YYYY";
+                T3.Text = data.DistroDate.ToString();
         		info.Controls.Add (L3);
         		info.Controls.Add (T3);
     
@@ -525,21 +534,26 @@ namespace rit_dbconcepts
 				info.Controls.Add (T6);
 				
 			} else if( title.ToLower().Equals( "customer" )){
-				
+
+                Customer data = (Customer)selection;
+
 				L1.Text = "Name (Last/First)";
-				T1.Text = selection;
+                T1.Text = data.FirstName + " " + data.LastName;
 				info.Controls.Add (L1);
 				info.Controls.Add (T1);
 				
 				L2.Text = "Address";
+                T2.Text = data.BillAddress.ToString();
 				info.Controls.Add (L2);
 				info.Controls.Add (T2);
 				
 				L3.Text = "Card Number";
+                T3.Text = data.CardNumber.ToString();
 				info.Controls.Add (L3);
 				info.Controls.Add (T3);
 				
 				L4.Text = "Card Expiration Date";
+                T4.Text = data.ExpDate.ToString();
 				info.Controls.Add( L4 );
 				info.Controls.Add( T4 );
 			}
