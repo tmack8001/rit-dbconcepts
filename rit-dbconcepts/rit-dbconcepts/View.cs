@@ -2,7 +2,10 @@
 using System;
 using System.Drawing;
 using System.Collections;
+using System.Collections.Generic;
 using System.Windows.Forms;
+
+using rit_dbconcepts.Types;
 
 namespace rit_dbconcepts
 {
@@ -11,10 +14,11 @@ namespace rit_dbconcepts
     public class View : System.Windows.Forms.Form
     {
 
-        private ArrayList cBoxList = new ArrayList();
+        private List<CheckBox> cBoxList = new List<CheckBox>();
 		private Form info;
 		private TabPage movieLookup;
 		private TabPage custLookup;
+		private DataAccessLayer DAL;
 		
 		
         // Main Page
@@ -43,14 +47,19 @@ namespace rit_dbconcepts
 
         private Button custSubmit;
 		private Button custInfoButton;
-
+		private Button custCheckIO;
+		
         // Tabbed Layout
         private TabControl tabs;
+		
 
         public View ()
         {
-        	this.tabs = new TabControl ();
-
+        	
+			this.tabs = new TabControl ();
+        	this.Text = "MovieDatabase";
+        	this.DAL = new DataAccessLayer ();
+			
             // Create main page objects
         	movieLookup = initMovieLookup ();
         	
@@ -136,6 +145,7 @@ namespace rit_dbconcepts
         		} else {
         			box.Text = "OR";
         		}
+        		
         		this.cBoxList.Add (box);
         		
         		if (i == 3) {
@@ -157,7 +167,7 @@ namespace rit_dbconcepts
         			this.transaction.Enabled = true;
         		} else {
         			this.infoButton.Enabled = false;
-					this.transaction.Enabled = false;
+        			this.transaction.Enabled = false;
         		}
         	};
         	
@@ -166,30 +176,127 @@ namespace rit_dbconcepts
         	this.submit.Name = "submitButton";
         	this.submit.TabIndex = 5;
         	this.submit.Text = "Submit";
-        	this.submit.Click += delegate(object sender, EventArgs e) { 
-                Application.Exit (); 
+        	this.submit.Click += delegate(object sender, EventArgs e) {
+        		
+        		this.results.Items.Clear ();
+        		List<Movie> moviesInDb = new List<Movie> ();
+        		
+        		bool incTitle = !this.movieTitle.Text.Trim ().Equals ("Enter a movie title") &&
+					!this.movieTitle.Text.Trim ().Equals ("");
+        		bool incStoreLoc = !this.storeLoc.Text.Trim ().Equals ("Enter a town/city") && 
+					!this.movieTitle.Text.Trim ().Equals ("");
+        		bool incCastCrewMember = !this.castCrewMember.Text.Trim ().Equals ("Enter a cast or crew member") || 
+						!this.movieTitle.Text.Trim ().Equals ("");
+        		bool incGenre = !this.genre.Text.Trim ().Equals ("Enter a genre") && 
+					!this.movieTitle.Text.Trim ().Equals ("");
+        		bool incPublisher = !this.publisher.Text.Trim ().Equals ("Enter a publisher") && 
+					!this.movieTitle.Text.Trim ().Equals ("");
+        		
+        		if (incTitle) {
+        			System.Console.Out.WriteLine ("Search Title");
+        			moviesInDb = this.DAL.getMovieByTitle (this.movieTitle.Text.Trim ());
+        			if (incStoreLoc) {
+        				foreach (Movie m in moviesInDb) {
+        					foreach (Store s in DAL.getStoreByCity (this.storeLoc.Text.Trim ())) {
+        						foreach (StockItem d in s.Inventory) {
+        							if (!d.Item.Movie.Title.Equals (this.movieTitle.Text.Trim ())) {
+        								moviesInDb.Remove (m);
+        								System.Console.Out.WriteLine ("Removed " + m.ToString ());
+        							}
+        						}
+        					}
+        					
+        				}
+        			}
+        		} else if (incStoreLoc) {
+        			
+        			Store current = null;
+        			if (this.DAL.getStoreByCity (this.storeLoc.Text.Trim ()).Count > 1) {
+        				System.Console.Out.WriteLine ("Found multiple stores");
+						Form picker = new Form ();
+        				picker.Text = "Select a store";
+        				picker.Size = new Size (400, 300);
+        				
+        				ListBox choices = new ListBox ();
+        				choices.Location = new Point (5, 5);
+        				choices.Size = new Size (400, 300);
+        				foreach (Store s in this.DAL.getStoreByCity (this.storeLoc.Text.Trim ())) {
+        					choices.Items.Add (s.Address);
+        				}
+        				
+        				picker.Controls.Add (choices);
+        				
+        				Button accept = new Button ();
+        				accept.Text = "Ok";
+        				accept.Location = new Point (55, 45);
+        				accept.Click += delegate {
+        					int index = choices.SelectedIndex;
+        					current = this.DAL.getStoreByCity (this.storeLoc.Text.Trim ())[index];
+        					if (current != null) {
+        						picker.Dispose ();
+        					}
+        				};
+        				
+						picker.Visible = true;
+						
+						
+					} else if( this.DAL.getStoreByCity (this.storeLoc.Text.Trim ()).Count == 1){
+						System.Console.Out.WriteLine ("Found a single store.");
+						current = this.DAL.getStoreByCity (this.storeLoc.Text.Trim ())[ 0 ];
+					} else {
+						System.Console.Out.WriteLine ("Found no stores in: " + this.storeLoc.Text.Trim () );
+						return;
+					}
+        			if (incTitle) {
+						foreach (StockItem d in current.Inventory) {
+							if (d.Item.Movie.Title.Equals (this.movieTitle.Text.Trim ())) {
+								moviesInDb.Add( d.Item.Movie);
+							}
+						}
+					
+					} else {
+						foreach( StockItem d in current.Inventory ){
+							moviesInDb.Add( d.Item.Movie);
+						}
+					}
+				} else if( incPublisher){
+					Publisher current = null;
+					foreach( Publisher p in DAL.getPublishers()){
+						if( p.Name.ToLower().Equals( this.publisher.Text.Trim ().ToLower())) {
+							current = p;
+						}
+					}
+					if( current == null){ return; } 
+					
+					moviesInDb = new List<Movie>( current.PublishedMovies );
+					
+				}
+				
+				foreach( Movie m in moviesInDb){
+					results.Items.Add( m.ToString() );
+				}
             };
 			
 			// infoButton
-			this.infoButton.Location = new Point (320, 550);
+			this.infoButton.Location = new Point (325, 550);
 			this.infoButton.Name = "InfoButton";
 			this.infoButton.TabIndex = 5;
 			this.infoButton.Text = "Info";
 			this.infoButton.Enabled = false;
 			this.infoButton.Click += delegate(object sender, EventArgs e) { 
-				foreach( String cur in results.Items ){
+				foreach( String cur in results.SelectedItems ){
 					infoPanel ("Movie", cur);
 				}
 			};
 			
 			// transaction
-			this.transaction.Location = new Point (390, 550);
+			this.transaction.Location = new Point (400, 550);
 			this.transaction.Name = "InfoButton";
 			this.transaction.TabIndex = 5;
 			this.transaction.Text = "Transaction";
 			this.transaction.Enabled = false;
 			this.transaction.Click += delegate(object sender, EventArgs e) {
-				this.selectedMovie.Text = (String)this.results.SelectedItem;
+				this.selectedMovie.Text = "Selected Movie: " + (String)this.results.SelectedItem;
 				tabs.SelectedTab = this.custLookup;
 			};
 
@@ -207,8 +314,6 @@ namespace rit_dbconcepts
 			Lookup.Controls.Add( this.infoButton);
 			Lookup.Controls.Add( this.transaction );
 			
-			// TODO remove
-			results.Items.Add( "Matrix");
 
             return Lookup;
         }
@@ -224,11 +329,16 @@ namespace rit_dbconcepts
         	this.custResults = new ListBox ();
         	this.custSubmit = new Button ();
         	this.custInfoButton = new Button ();
+        	this.custCheckIO = new Button ();
 
             this.customerHeader.Location = new Point (325, 10);
         	this.customerHeader.Name = "CustomerHeader";
         	this.customerHeader.Size = new Size (300, 20);
         	this.customerHeader.Text = "Customer Lookup";
+   
+			this.selectedMovie.Location = new Point (20, 10);
+        	this.selectedMovie.Name = "SelectedMovieLabel";
+        	this.selectedMovie.Size = new Size (200, 30);
 
             this.customer.Location = new Point (45, 50);
         	this.customer.Name = "CustomerField";
@@ -251,16 +361,18 @@ namespace rit_dbconcepts
             this.custResults.Location = new Point (40, 200);
         	this.custResults.Name = "Results";
         	this.custResults.Size = new Size (700, 300);
-			this.custResults.SelectedValueChanged += delegate {
-				if (results.Items.Count > 0) {
-					this.custInfoButton.Enabled = true;
-				} else {
-					this.custInfoButton.Enabled = false;
+        	this.custResults.SelectedValueChanged += delegate {
+        		if (custResults.Items.Count > 0) {
+        			this.custInfoButton.Enabled = true;
+        			this.custCheckIO.Enabled = true;
+        		} else {
+        			this.custInfoButton.Enabled = false;
+        			this.custCheckIO.Enabled = false;
 				}
 			};
 
             // CustSubmit
-        	this.custSubmit.Location = new Point (300, 550);
+        	this.custSubmit.Location = new Point (250, 550);
         	this.custSubmit.Name = "CustSubmitButton";
         	this.custSubmit.TabIndex = 3;
         	this.custSubmit.Text = "Lookup";
@@ -268,8 +380,8 @@ namespace rit_dbconcepts
                 Application.Exit (); 
             };
 			
-			// CustSubmit
-        	this.custInfoButton.Location = new Point (375, 550);
+			// CustInfoButton
+        	this.custInfoButton.Location = new Point (325, 550);
         	this.custInfoButton.Name = "CustInfoButton";
         	this.custInfoButton.TabIndex = 4;
         	this.custInfoButton.Text = "Info";
@@ -279,14 +391,46 @@ namespace rit_dbconcepts
 					infoPanel("Customer", sel); 
 				}
             };
+			
+			// CustCheckIO
+			this.custCheckIO.Location = new Point (400, 550);
+			this.custCheckIO.Name = "CustInfoButton";
+			this.custCheckIO.TabIndex = 4;
+			this.custCheckIO.Text = "Check";
+			this.custCheckIO.Enabled = false;
+			this.custCheckIO.Click += delegate(object sender, EventArgs e) {
+				Form dialog = new Form();				
+				Label message = new Label();
+				Button accept = new Button();
+								
+				message.Text = "Checked";
+				message.Location = new Point( 65, 5 );
+				message.Size = new Size(  100, 32);
+				
+				accept.Text = "Ok";
+				accept.Location = new Point( 55, 45 );
+				accept.Click += delegate {
+					dialog.Dispose();
+				};
+				
+				dialog.Size = new Size (180, 100);
+				dialog.Text = "Success!";
+				dialog.Controls.Add (accept);
+				dialog.Controls.Add (message);
+				dialog.Visible = true;
+			};
+			
+			
         	
         	CusInfo.Controls.Add (this.customerHeader);
+			CusInfo.Controls.Add( this.selectedMovie);
         	CusInfo.Controls.Add (this.address);
         	CusInfo.Controls.Add (this.customer);
         	CusInfo.Controls.Add (this.cardNum);
         	CusInfo.Controls.Add (this.custResults);
         	CusInfo.Controls.Add (this.custSubmit);
 			CusInfo.Controls.Add (this.custInfoButton);
+			CusInfo.Controls.Add (this.custCheckIO);
 			
 			// TODO remove
 			custResults.Items.Add( "Smith, Bill");
@@ -298,8 +442,9 @@ namespace rit_dbconcepts
         {
 
             this.info = new Form ();
-        	this.info.ClientSize = new Size (500, 350);
-        	
+        	this.info.ClientSize = new Size (500, 610);
+        	this.info.Text = selection;
+				
 			Label infoPanelHeader = new Label ();
         	infoPanelHeader.Text = title + " Info";
         	infoPanelHeader.Location = new Point (200, 20);
@@ -340,6 +485,9 @@ namespace rit_dbconcepts
         	T5.Size = new Size (335, 32);
         	T5.Location = new Point (90, 250);
    
+			ListBox details = new ListBox ();
+        	details.Location = new Point (30, 300);
+        	details.Size = new Size (375, 300);
 			
 			if (title.ToLower ().Equals ("movie")) 
 			{
@@ -379,14 +527,15 @@ namespace rit_dbconcepts
 				
 			}
 			
+			
 			Button addItem = new Button();
-			addItem.Location = new Point( 200, 300);
+			addItem.Location = new Point( 420, 450);
 			addItem.Text = "Add";			
 			addItem.Click +=  delegate(object sender, EventArgs e) {
 				this.info.Dispose();
 			};
 			this.info.Controls.Add( addItem );
-						
+			this.info.Controls.Add( details);			
 			this.info.Visible = true;
 		}
     }
