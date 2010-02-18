@@ -310,6 +310,11 @@ namespace rit_dbconcepts
             connection.Open();
             Reader = command.ExecuteReader();
 
+
+            retVal = TypeFactory.readStore(Reader);
+            retVal.Inventory = new LinkedList<StockItem>(getInventoryById(Reader.GetOrdinal("store_id")));
+  
+
             //some function in TypeFactor(Reader);
             connection.Close();
 
@@ -333,6 +338,8 @@ namespace rit_dbconcepts
 
             while (Reader.Read())
             {
+                Store store = TypeFactory.readStore(Reader);
+                store.Inventory = new LinkedList<StockItem>(getInventoryById(Reader.GetOrdinal("store_id")));
                 retList.Add(TypeFactory.readStore(Reader));
             }
 
@@ -358,7 +365,9 @@ namespace rit_dbconcepts
 
             while (Reader.Read())
             {
-                TypeFactory.readStore(Reader);
+                Store store = TypeFactory.readStore(Reader);
+                store.Inventory = new LinkedList<StockItem>(getInventoryById(Reader.GetOrdinal("store_id")));
+                retList.Add(TypeFactory.readStore(Reader));
             }
 
             connection.Close();
@@ -382,6 +391,8 @@ namespace rit_dbconcepts
 
             while (Reader.Read())
             {
+                Store store = TypeFactory.readStore(Reader);
+                store.Inventory = new LinkedList<StockItem>(getInventoryById(Reader.GetOrdinal("store_id")));
                 retList.Add(TypeFactory.readStore(Reader));
             }
 
