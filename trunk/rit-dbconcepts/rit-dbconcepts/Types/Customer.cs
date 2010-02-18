@@ -36,5 +36,10 @@ namespace rit_dbconcepts.Types
             get { return mBillAddress; }
             set { mBillAddress = value; }
         }
+
+        public override String ToString()
+        {
+            return FirstName + " " + LastName + ": " + BillAddress;
+        }
     }
 }
