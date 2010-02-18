@@ -749,13 +749,13 @@ namespace rit_dbconcepts
             /*UPDATE table_name
             SET column1=value, column2=value2,...
             WHERE some_column=some_value*/
-
-            String queryStr = "UPDATE publisher_movie" +
+            
+            String queryStr = "UPDATE publisher_movie";/* +
                 " SET publisher_name = " + publisher.Name + ", movie_id = " + inventory.IsInStock + ", " +
                 " price_per_day = " + inventory.PricePerDay +
                 " dvd_id = " + inventory.Item.Id +
                 " WHERE dvd_id = " + inventory.Item.Id;
-
+            */
             command = connection.CreateCommand();
             command.CommandText = queryStr;
 
