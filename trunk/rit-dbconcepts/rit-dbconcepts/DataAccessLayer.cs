@@ -304,17 +304,13 @@ namespace rit_dbconcepts
             command = connection.CreateCommand();
             command.CommandText = queryStr;
 
-            Reader.Read();
-            retVal = TypeFactory.readStore(Reader);
-
             connection.Open();
             Reader = command.ExecuteReader();
 
-
+            Reader.Read();
             retVal = TypeFactory.readStore(Reader);
             retVal.Inventory = new LinkedList<StockItem>(getInventoryById(Reader.GetOrdinal("store_id")));
   
-
             //some function in TypeFactor(Reader);
             connection.Close();
 
@@ -324,6 +320,7 @@ namespace rit_dbconcepts
         public List<Store> getStoreByCity(String city)
         {
             List<Store> retList = new List<Store>();
+            List<int> storeIds = new List<int>();
 
             String queryStr = "SELECT s.store_id, s.street, s.city, s.state," +
                 " s.zipcode, s.date_opened" +
@@ -339,18 +336,25 @@ namespace rit_dbconcepts
             while (Reader.Read())
             {
                 Store store = TypeFactory.readStore(Reader);
-                store.Inventory = new LinkedList<StockItem>(getInventoryById(Reader.GetOrdinal("store_id")));
+                storeIds.Add(Reader.GetInt16(Reader.GetOrdinal("store_id")));
                 retList.Add(TypeFactory.readStore(Reader));
             }
 
             //some function in TypeFactor(Reader);
             connection.Close();
+
+            for (int i = 0; i < retList.Count; ++i)
+            {
+                retList[i].Inventory = new LinkedList<StockItem>(getInventoryById(storeIds[i]));
+            }
+
             return retList;
         }
 
         public List<Store> getStoreByState(String state)
         {
             List<Store> retList = new List<Store>();
+            List<int> storeIds = new List<int>();
 
             String queryStr = "SELECT s.store_id, s.street, s.city, s.state" +
                 " s.zipcode, s.date_opened" +
@@ -366,17 +370,25 @@ namespace rit_dbconcepts
             while (Reader.Read())
             {
                 Store store = TypeFactory.readStore(Reader);
-                store.Inventory = new LinkedList<StockItem>(getInventoryById(Reader.GetOrdinal("store_id")));
+                storeIds.Add(Reader.GetInt16(Reader.GetOrdinal("store_id")));
                 retList.Add(TypeFactory.readStore(Reader));
             }
 
+            //some function in TypeFactor(Reader);
             connection.Close();
+
+            for (int i = 0; i < retList.Count; ++i)
+            {
+                retList[i].Inventory = new LinkedList<StockItem>(getInventoryById(storeIds[i]));
+            }
+
             return retList;
         }
 
         public List<Store> getStoreByZipcode(String zipcode)
         {
             List<Store> retList = new List<Store>();
+            List<int> storeIds = new List<int>();
 
             String queryStr = "SELECT s.store_id, s.street, s.city, s.state" +
                 " s.zipcode, s.date_opened" +
@@ -392,12 +404,18 @@ namespace rit_dbconcepts
             while (Reader.Read())
             {
                 Store store = TypeFactory.readStore(Reader);
-                store.Inventory = new LinkedList<StockItem>(getInventoryById(Reader.GetOrdinal("store_id")));
+                storeIds.Add(Reader.GetInt16(Reader.GetOrdinal("store_id")));
                 retList.Add(TypeFactory.readStore(Reader));
             }
 
             //some function in TypeFactor(Reader);
             connection.Close();
+
+            for (int i = 0; i < retList.Count; ++i)
+            {
+                retList[i].Inventory = new LinkedList<StockItem>(getInventoryById(storeIds[i]));
+            }
+
             return retList;
         }
 
@@ -423,13 +441,13 @@ namespace rit_dbconcepts
                 dvdIds.Add(Reader.GetInt16(Reader.GetOrdinal("dvd_id")));
             }
 
+            connection.Close();
+
             for (int i = 0; i < retList.Count; ++i)
             {
                 retList[i].Item = getDvdById(dvdIds[i]);
             }
 
-            //some function in TypeFactor(Reader);
-            connection.Close();
             return retList;
         }
 
@@ -439,7 +457,7 @@ namespace rit_dbconcepts
             List<int> dvdIds = new List<int>();
 
             String queryStr = "SELECT i.store_id, i.in_stock, i.price_per_day, i.dvd_id" +
-                " FROM inventory as i WHERE i.store_id = " + id + " LIMIT 1";
+                " FROM inventory as i WHERE i.store_id = " + id;
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
@@ -453,12 +471,13 @@ namespace rit_dbconcepts
                 dvdIds.Add(Reader.GetInt16(Reader.GetOrdinal("dvd_id")));
             }
 
+            connection.Close();
+
             for (int i = 0; i < retList.Count; ++i)
             {
                 retList[i].Item = getDvdById(dvdIds[i]);
             }
 
-            connection.Close();
             return retList;
         }
 
@@ -544,7 +563,7 @@ namespace rit_dbconcepts
             String queryStr = "SELECT d.dvd_id, d.format, m.movie_id, dm.release_date" +
                 " FROM dvd as d, dvd_movie as dm" +
                 " RIGHT OUTER JOIN movie as m ON m.movie_id = dm.movie_id" +
-                " WHERE dm_dvd_id = d.dvd_id AND d.dvd_id = " + id;
+                " WHERE dm.dvd_id = d.dvd_id AND d.dvd_id = " + id;
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
@@ -554,10 +573,12 @@ namespace rit_dbconcepts
 
             Reader.Read();
             retVal = TypeFactory.readDvd(Reader);
-            retVal.Movie = getMovieById(Reader.GetInt16(Reader.GetOrdinal("movie_id")));
+            int movieId = Reader.GetInt16(Reader.GetOrdinal("movie_id"));
 
-            //some function in TypeFactor(Reader);
             connection.Close();
+
+            retVal.Movie = getMovieById(movieId);
+            
             return retVal;
         }
 
@@ -569,7 +590,7 @@ namespace rit_dbconcepts
             String queryStr = "SELECT d.dvd_id, d.format, m.movie_id, dm.release_date" +
                 " FROM dvd as d, dvd_movie as dm" +
                 " RIGHT OUTER JOIN movie as m ON m.movie_id = dm.movie_id" +
-                " WHERE dm_dvd_id = d.dvd_id AND m.movie_id = " + id;
+                " WHERE dm.dvd_id = d.dvd_id AND m.movie_id = " + id;
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
@@ -582,14 +603,14 @@ namespace rit_dbconcepts
                 retList.Add(TypeFactory.readDvd(Reader));
                 movieIds.Add(Reader.GetInt16(Reader.GetOrdinal("movie_id")));
             }
+            
+            connection.Close();
 
             for (int i = 0; i < retList.Count; ++i)
             {
                 retList[i].Movie = getMovieById(movieIds[i]);
             }
-
-            //some function in TypeFactor(Reader);
-            connection.Close();
+            
             return retList;
         }
 
