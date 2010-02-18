@@ -440,7 +440,7 @@ namespace rit_dbconcepts
 			this.addNewCust.Text = "Add New Customer";
 			
         	CusInfo.Controls.Add (this.customerHeader);
-			CusInfo.Controls.Add( this.selectedMovie);
+			CusInfo.Controls.Add (this.selectedMovie);
         	CusInfo.Controls.Add (this.address);
         	CusInfo.Controls.Add (this.customer);
         	CusInfo.Controls.Add (this.cardNum);
@@ -449,7 +449,6 @@ namespace rit_dbconcepts
 			CusInfo.Controls.Add (this.custInfoButton);
 			CusInfo.Controls.Add (this.custCheckIO);
 			CusInfo.Controls.Add( this.addNewCust);
-
             return CusInfo;
         }
 
@@ -521,7 +520,7 @@ namespace rit_dbconcepts
 
         		L1.Text = "Title";
         		info.Controls.Add (L1);
-        		T1.Text = data.Title;
+        		T1.Text = selection == null ? "Enter Title Here" : data.Title;
         		info.Controls.Add (T1);
     
 				L2.Text = "StoreId";
@@ -529,7 +528,7 @@ namespace rit_dbconcepts
         		info.Controls.Add (T2);
    
 				L3.Text = "Release Date (DD/MM/YYYY";
-                T3.Text = data.DistroDate.ToString();
+                T3.Text = selection == null ? "Enter Date Here" : data.DistroDate.ToString();
         		info.Controls.Add (L3);
         		info.Controls.Add (T3);
     
@@ -550,60 +549,40 @@ namespace rit_dbconcepts
                 Customer data = (Customer)selection;
 
 				L1.Text = "Name (Last/First)";
-                T1.Text = data.FirstName + " " + data.LastName;
+                T1.Text = selection == null ? "Enter Name Here" : data.FirstName + " " + data.LastName;
 				info.Controls.Add (L1);
 				info.Controls.Add (T1);
 				
 				L2.Text = "Address";
-                T2.Text = data.BillAddress.ToString();
+                T2.Text = selection == null ? "Enter Address Here" : data.BillAddress.ToString();
 				info.Controls.Add (L2);
 				info.Controls.Add (T2);
 				
 				L3.Text = "Card Number";
-                T3.Text = data.CardNumber.ToString();
+                T3.Text = selection == null ? "Enter Card Number Here" : data.CardNumber.ToString();
 				info.Controls.Add (L3);
 				info.Controls.Add (T3);
 				
 				L4.Text = "Card Expiration Date";
-                T4.Text = data.ExpDate.ToString();
+                T4.Text = selection == null ? "Enter expiration date here" : data.ExpDate.ToString();
 				info.Controls.Add( L4 );
 				info.Controls.Add( T4 );
 			}
 			
-			
 			Button addItem = new Button();
 			addItem.Location = new Point( 420, 450);
-			addItem.Text = "Add";			
+            addItem.Text = selection == null ? "Add" : "Edit";			
 			addItem.Click +=  delegate(object sender, EventArgs e) {
 				if( title.ToLower().Equals( "movie") ){
-					int year = int.Parse(T3.Text.Substring(6));
-					int month = int.Parse(T3.Text.Substring( 3, 2));
-					int day = int.Parse(T3.Text.Substring(0,2));
-					
-					
-					int numCastCrew = T5.Text.Split( delim).GetLength(1) / 3;
-					CastCrewMember [] cast = new CastCrewMember[ numCastCrew ];
-					
-					for( int i = 0; i < T5.Text.Split( delim).GetLength(1) / 3; i = i + 3){
-						cast[ i / 3] = new CastCrewMember( new Person( -1, T5.Text.Split( delim)[ i], 
-							T5.Text.Split( delim)[ i + 1 ]), 
-							T5.Text.Split( delim)[ i + 2]);
-					}
-					DAL.insertMovie( new Movie(-1, T1.Text, new DateTime( year,month, day), T4.Text.Split( delim ), cast));
-				} else if( title.ToLower().Equals("customer")) {
-					int year = int.Parse( T4.Text.Substring( 6 ));
-					int month = int.Parse( T4.Text.Substring( 3, 2 ));
-					int day = int.Parse( T4.Text.Substring( 0, 2 ));
 
-					String[] addressStr = T2.Text.Split( delim );
+                    
+
+					//DAL.insertMovie( new Movie(-1, T1.Text, new DateTime( year,month, day), T4.Text.Split( delim ), cast));
+				} else if( title.ToLower().Equals("customer")) {
 					
-					String street = addressStr[ 0 ] + addressStr[ 1 ] + addressStr[ 2 ];
-					String city = addressStr[ 3 ];
-					String state = addressStr[ 4 ];
-					String zip = addressStr[ 5 ];
 					
-					DAL.insertCustomer( new Customer( new Person( -1, T1.Text.Substring( T1.Text.IndexOf(',')), T1.Text.Substring(0, T1.Text.IndexOf(','))), T3.Text, 
-							new DateTime( year,month, day), new Address(street, city, state, zip)));
+					//DAL.insertCustomer( new Customer( new Person( -1, T1.Text.Substring( T1.Text.IndexOf(',')), T1.Text.Substring(0, T1.Text.IndexOf(','))), T3.Text, 
+					//		new DateTime( year,month, day), new Address(street, city, state, zip)));
 					
 				}
 				
