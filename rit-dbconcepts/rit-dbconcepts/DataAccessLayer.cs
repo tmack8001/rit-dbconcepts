@@ -1034,8 +1034,8 @@ namespace rit_dbconcepts
             }
             else
             {
-                insertPerson(customer);
-
+                customer.Id = insertPerson(customer);
+                
                 String queryStr = "INSERT INTO customer" +
                     " ( person_id, street, city, state, zipcode, card_number, exp_date )" +
                     " VALUES ( " + customer.Id + ", '" + customer.BillAddress.Street + "'," +
