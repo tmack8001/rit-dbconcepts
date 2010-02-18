@@ -902,7 +902,7 @@ namespace rit_dbconcepts
                     " VALUES ( " + customer.Id + ", '" + customer.BillAddress.Street + "'," +
                     " '" + customer.BillAddress.City + "', '" + customer.BillAddress.State + "'," +
                     " '" + customer.BillAddress.ZipCode + "', '" + customer.CardNumber + "'," +
-                    " '" + customer.ExpDate + "' )";
+                    " '" + customer.ExpDate.Date.ToString("d") + "' )";
 
                 command = connection.CreateCommand();
                 command.CommandText = queryStr;
@@ -921,7 +921,7 @@ namespace rit_dbconcepts
             String queryStr = "UPDATE customer" +
                 " SET street = '" + customer.BillAddress.Street + "', city = '" + customer.BillAddress.City + "'" +
                 " state = '" + customer.BillAddress.State + "', zipcode = '" + customer.BillAddress.ZipCode + "'" +
-                " card_number = '" + customer.CardNumber + "', exp_date = '" + customer.ExpDate.Date.ToString("d") + "'" +
+                " card_number = '" + customer.CardNumber + "', exp_date = '" + customer.ExpDate.Date.ToString("yyyy-MM-dd hh:mm:ss") + "'" +
                 " WHERE person_id = " + customer.Id;
 
             command = connection.CreateCommand();
@@ -995,7 +995,7 @@ namespace rit_dbconcepts
                 String queryStr = "INSERT INTO employee" +
                     " ( person_id, position, hire_date )" +
                     " VALUES ( " + employee.Id + ", '" + employee.Position + "'," +
-                    " '" + employee.HireDate + "' )";
+                    " '" + employee.HireDate.Date.ToString("d") + "' )";
 
                 command = connection.CreateCommand();
                 command.CommandText = queryStr;
