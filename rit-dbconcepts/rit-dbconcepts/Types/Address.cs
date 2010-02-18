@@ -20,6 +20,29 @@ namespace rit_dbconcepts.Types
             mZip = zip;
         }
 
+        public static Address Parse(String str)
+        {
+            String[] split = str.Split(',');
+            String streetCity = split[0].Trim();
+            String stateZip = split[1].Trim();
+
+            split = streetCity.Split();
+
+            String street = split[0].Trim() + ' ' + split[1].Trim() + " " + split[2].Trim() + " " + split[3].Trim();
+            String city = split[4].Trim();
+
+            split = stateZip.Split();
+
+            String state = split[0].Trim();
+            String zip = split[1].Trim();
+
+            return new Address(
+                street,
+                city,
+                state,
+                zip);
+        }
+
         public String Street
         {
             get { return mStreet; }

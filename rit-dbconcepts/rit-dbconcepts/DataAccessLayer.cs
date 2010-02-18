@@ -831,7 +831,7 @@ namespace rit_dbconcepts
 
         private void updateMovie(Movie movie)
         {
-            String genres = String.Join(",", movie.Genres.ToArray<String>());
+            String genres = movie.GenreString;
 
             String queryStr = "UPDATE movie" +
                 " SET title = '" + movie.Title + "', genre = '" + genres + "'" +

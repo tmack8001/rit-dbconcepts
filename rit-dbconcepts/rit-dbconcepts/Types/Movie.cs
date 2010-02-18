@@ -22,6 +22,15 @@ namespace rit_dbconcepts.Types
             mCastCrew = new LinkedList<CastCrewMember>();
         }
 
+        public Movie(int id, String title, DateTime distroDate, String genreString)
+        {
+            mId = id;
+            mTitle = title;
+            mDistroDate = distroDate;
+            GenreString = genreString;
+            mCastCrew = new LinkedList<CastCrewMember>();
+        }
+
         public Movie(int id, String title, DateTime distroDate, String[] genres, CastCrewMember[] castCrew)
         {
             mId = id;
@@ -52,6 +61,39 @@ namespace rit_dbconcepts.Types
         public LinkedList<String> Genres
         {
             get { return mGenres; }
+        }
+
+        public String GenreString
+        {
+            get
+            {
+                return String.Join(", ", Genres.ToArray());
+            }
+
+            set
+            {
+                String[] splitStr = value.Trim().Split(',');
+                mGenres = new LinkedList<string>();
+                foreach (String str in splitStr)
+                {
+                    mGenres.AddFirst(str.Trim());
+                }
+            }
+        }
+
+        public String CastCrewString
+        {
+            get
+            {
+                String str = String.Empty;
+                foreach (CastCrewMember crew in CastCrew)
+                {
+                    str = str + crew.FirstName + " " +crew.LastName + ": " + crew.Job + ", ";
+                }
+                str.Trim(',');
+
+                return str;
+            }
         }
 
         public LinkedList<CastCrewMember> CastCrew
