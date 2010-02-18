@@ -279,7 +279,7 @@ namespace rit_dbconcepts
         {
             List<Store> retList = new List<Store>();
 
-            String queryStr = "SELECT s.store_id, s.street, s.city, s.state" +
+            String queryStr = "SELECT s.store_id, s.street, s.city, s.state," +
                 " s.zipcode, s.date_opened" +
                 " FROM store as s";
 
@@ -298,7 +298,7 @@ namespace rit_dbconcepts
         {
             List<Store> retList = new List<Store>();
 
-            String queryStr = "SELECT s.store_id, s.street, s.city, s.state" +
+            String queryStr = "SELECT s.store_id, s.street, s.city, s.state," +
                 " s.zipcode, s.date_opened" +
                 " FROM store as s" +
                 " WHERE s.store_id = " + id;
@@ -318,7 +318,7 @@ namespace rit_dbconcepts
         {
             List<Store> retList = new List<Store>();
 
-            String queryStr = "SELECT s.store_id, s.street, s.city, s.state" +
+            String queryStr = "SELECT s.store_id, s.street, s.city, s.state," +
                 " s.zipcode, s.date_opened" +
                 " FROM store as s" +
                 " WHERE s.city = '" + city + "'";
