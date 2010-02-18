@@ -294,10 +294,9 @@ namespace rit_dbconcepts
             return retList;
         }
 
-        public List<Store> getStoreById(int id)
+        public Store getStoreById(int id)
         {
-            List<Store> retList = new List<Store>();
-
+            Store retVal;
             String queryStr = "SELECT s.store_id, s.street, s.city, s.state," +
                 " s.zipcode, s.date_opened" +
                 " FROM store as s" +
@@ -306,12 +305,16 @@ namespace rit_dbconcepts
             command = connection.CreateCommand();
             command.CommandText = queryStr;
 
+            Reader.Read();
+            retVal = TypeFactory.readStore(Reader);
+
             connection.Open();
             Reader = command.ExecuteReader();
 
             //some function in TypeFactor(Reader);
             connection.Close();
-            return retList;
+
+            return retVal;
         }
 
         public List<Store> getStoreByCity(String city)
@@ -328,6 +331,11 @@ namespace rit_dbconcepts
 
             connection.Open();
             Reader = command.ExecuteReader();
+
+            while (Reader.Read())
+            {
+                TypeFactory.readStore(Reader);
+            }
 
             //some function in TypeFactor(Reader);
             connection.Close();
@@ -349,6 +357,10 @@ namespace rit_dbconcepts
             connection.Open();
             Reader = command.ExecuteReader();
 
+            while (Reader.Read())
+            {
+                TypeFactory.readStore(Reader);
+            }
             //some function in TypeFactor(Reader);
             connection.Close();
             return retList;
@@ -368,6 +380,11 @@ namespace rit_dbconcepts
 
             connection.Open();
             Reader = command.ExecuteReader();
+
+            while (Reader.Read())
+            {
+                TypeFactory.readStore(Reader);
+            }
 
             //some function in TypeFactor(Reader);
             connection.Close();

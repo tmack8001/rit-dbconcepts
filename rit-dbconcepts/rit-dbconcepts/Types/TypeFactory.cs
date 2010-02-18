@@ -108,7 +108,7 @@ namespace rit_dbconcepts.Types
         public static Publisher readPublisher(DbDataReader pubReader)
         {
             Address addressData = readAddress(pubReader);
-
+            
             int nameOrdinal = pubReader.GetOrdinal("name");
             int phoneOrdinal = pubReader.GetOrdinal("phone");
 
