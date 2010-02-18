@@ -564,11 +564,6 @@ namespace rit_dbconcepts
 				Form dialog = new Form();				
 				Label message = new Label();
 				Button accept = new Button();
-								
-				message.Text = this.selectedMovie.Text.Substring( 0, this.selectedMovie.Text.IndexOf(','));
-				
-				message.Location = new Point( 65, 5 );
-				message.Size = new Size(  100, 32);
 
                 DVD dvd;
                 Store store;
@@ -595,12 +590,18 @@ namespace rit_dbconcepts
 				accept.Click += delegate {
 					dialog.Dispose();
 				};
-				
-				dialog.Size = new Size (180, 100);
-				if( transaction.Id > 0 )
-                    dialog.Text = "Successfull Check-in of:";
+
+                if (transaction.Id > 0)
+                    message.Text = "Successfull Check-in of:";
                 else
-                    dialog.Text = "Successfull Check-out of:";
+                    message.Text = "Successfull Check-out of:";
+                message.Text += dvd.Movie.ToString();
+                message.Location = new Point(30, 5);
+                message.Size = new Size(200, 60);
+
+				dialog.Size = new Size (250, 125);
+				dialog.Text = "Success!";
+
 				dialog.Controls.Add (accept);
 				dialog.Controls.Add (message);
 				dialog.Visible = true;
