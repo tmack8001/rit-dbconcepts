@@ -1102,8 +1102,8 @@ namespace rit_dbconcepts
         private void updatePublisher(Publisher publisher)
         {
             String queryStr = "UPDATE publisher" +
-                " SET street = '" + publisher.Address.Street + "', city = '" + publisher.Address.City + "'" +
-                " state = '" + publisher.Address.State + "', zipcode = '" + publisher.Address.ZipCode + "'" +
+                " SET street = '" + publisher.Address.Street + "', city = '" + publisher.Address.City + "'," +
+                " state = '" + publisher.Address.State + "', zipcode = '" + publisher.Address.ZipCode + "'," +
                 " phone = '" + publisher.PhoneNumber + "'" + 
                 " WHERE name = '" + publisher.Name + "'";
 
@@ -1146,8 +1146,8 @@ namespace rit_dbconcepts
         private void updateStore(Store store)
         {
             String queryStr = "UPDATE store" +
-                " SET street = '" + store.Address.Street + "', city = '" + store.Address.City + "'" +
-                " state = '" + store.Address.State + "', zipcode = '" + store.Address.ZipCode  + "'" +
+                " SET street = '" + store.Address.Street + "', city = '" + store.Address.City + "'," +
+                " state = '" + store.Address.State + "', zipcode = '" + store.Address.ZipCode  + "'," +
                 " date_opened = '" + store.DateOpened + "'" + 
                 " WHERE store_id = " + store.StoreId;
 
@@ -1217,7 +1217,7 @@ namespace rit_dbconcepts
             else
             {
                 String queryStr = "INSERT INTO transaction" +
-                    " ( trans_id, dvd_id, cuatomer_id, trans_date  )" +
+                    " ( trans_id, dvd_id, cuatomer_id, trans_date )" +
                     " VALUES ( " + transaction.Id + ", " + transaction.DVD.Id + "," +
                     " " + transaction.Customer.Id + "' )";
 
