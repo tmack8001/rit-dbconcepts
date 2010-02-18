@@ -8,12 +8,20 @@ namespace rit_dbconcepts.Types
     public class Transaction
     {
         int mTransId;
+        DateTime mDate;
         Customer mCustomer;
         DVD mDvd;
 
-        public Transaction(int id, Customer customer, DVD dvd)
+        public Transaction(int id, DateTime date)
         {
             mTransId = id;
+            mDate = date;
+        }
+
+        public Transaction(int id, DateTime date, Customer customer, DVD dvd)
+        {
+            mTransId = id;
+            mDate = date;
             mCustomer = customer;
             mDvd = dvd;
         }
@@ -23,6 +31,8 @@ namespace rit_dbconcepts.Types
             get { return mTransId; }
             set { mTransId = value; }
         }
+
+
 
         public Customer Customer
         {

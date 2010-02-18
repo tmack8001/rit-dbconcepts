@@ -43,5 +43,10 @@ namespace rit_dbconcepts.Types
             get { return mZip; }
             set { mZip = value.ToLower(); }
         }
+
+        public override string ToString()
+        {
+            return Street + " " + City + ", " + State + " " + ZipCode;
+        }
     }
 }

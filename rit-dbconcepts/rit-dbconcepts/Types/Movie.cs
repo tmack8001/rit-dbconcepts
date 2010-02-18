@@ -49,5 +49,10 @@ namespace rit_dbconcepts.Types
         {
             get { return mCastCrew; }
         }
+
+        public override String ToString()
+        {
+            return Title + ", " + DistroDate.Date;
+        }
     }
 }
