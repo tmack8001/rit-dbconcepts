@@ -797,13 +797,13 @@ namespace rit_dbconcepts
 				} else if( title.ToLower().Equals("customer")) {
 
                     String[] names = { "", "" };
-                    if (customer.Text.Trim().IndexOf(" ") > 0)
+                    if (T1.Text.Trim().IndexOf(" ") > 0)
                     {
-                        names = customer.Text.Trim().Split();
+                        names = T1.Text.Trim().Split();
                     }
                     else
                     {
-                        names[1] = customer.Text.Trim();
+                        names[1] = T1.Text.Trim();
                     }
 
                     Address addr = Address.Parse(T2.Text.Trim());

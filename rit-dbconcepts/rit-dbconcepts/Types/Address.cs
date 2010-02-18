@@ -28,8 +28,14 @@ namespace rit_dbconcepts.Types
 
             split = streetCity.Split();
 
-            String street = split[0].Trim() + ' ' + split[1].Trim() + " " + split[2].Trim() + " " + split[3].Trim();
-            String city = split[4].Trim();
+            String street = String.Empty;
+            for (int i = 0; i < split.Length - 1; ++i)
+            {
+                street = street + split[i].Trim() + ' ';
+            }
+            street.Trim();
+
+            String city = split[split.Length-1].Trim();
 
             split = stateZip.Split();
 
