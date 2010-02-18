@@ -93,5 +93,42 @@ namespace rit_dbconcepts.Types
                 dvdReader.GetString(formatOrdinal),
                 dvdReader.GetDateTime(releaseOrdinal));
         }
+
+        public static CastCrewMember readCastCrewMember(DbDataReader crewReader)
+        {
+            Person personData = readPerson(crewReader);
+
+            int jobOrdinal = crewReader.GetOrdinal("job");
+
+            return new CastCrewMember(
+                personData,
+                crewReader.GetString(jobOrdinal));
+        }
+
+        public static Publisher readPublisher(DbDataReader pubReader)
+        {
+            Address addressData = readAddress(pubReader);
+
+            int nameOrdinal = pubReader.GetOrdinal("name");
+            int phoneOrdinal = pubReader.GetOrdinal("phone");
+
+            return new Publisher(
+                pubReader.GetString(nameOrdinal),
+                addressData,
+                pubReader.GetString(phoneOrdinal));
+        }
+
+        public static Store readStore(DbDataReader storeReader)
+        {
+            Address addressData = readAddress(storeReader);
+
+            int idOrdinal = storeReader.GetOrdinal("store_id");
+            int dateOpenedOrdinal = storeReader.GetOrdinal("date_opened");
+
+            return new Store(
+                storeReader.GetInt16(idOrdinal),
+                addressData,
+                storeReader.GetDateTime(dateOpenedOrdinal));
+        }
     }
 }
