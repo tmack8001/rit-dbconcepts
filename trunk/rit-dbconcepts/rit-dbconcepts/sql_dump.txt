@@ -1,0 +1,565 @@
+﻿-- phpMyAdmin SQL Dump
+-- version 3.1.3.1
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: Feb 18, 2010 at 11:24 AM
+-- Server version: 5.1.33
+-- PHP Version: 5.2.9-2
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+--
+-- Database: `database_concepts`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cast_and_crew`
+--
+
+CREATE TABLE IF NOT EXISTS `cast_and_crew` (
+  `cac_id` int(11) NOT NULL,
+  `movie_id` int(11) NOT NULL,
+  `job` varchar(256) NOT NULL,
+  PRIMARY KEY (`cac_id`,`movie_id`,`job`),
+  KEY `movie_id` (`movie_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `cast_and_crew`
+--
+
+INSERT INTO `cast_and_crew` (`cac_id`, `movie_id`, `job`) VALUES
+(1, 1, 'Director'),
+(1, 1, 'Writer'),
+(2, 1, 'Actor'),
+(70, 2, 'Director'),
+(71, 2, 'Writer'),
+(72, 2, 'Writer'),
+(73, 2, 'Actor'),
+(74, 2, 'Actor'),
+(75, 2, 'Actor'),
+(8, 3, 'Director'),
+(9, 3, 'Writer'),
+(10, 3, 'Actor'),
+(11, 3, 'Actor'),
+(12, 3, 'Actor'),
+(13, 4, 'Director'),
+(13, 4, 'Writer'),
+(14, 4, 'Writer'),
+(15, 4, 'Actor'),
+(16, 4, 'Actor'),
+(17, 4, 'Actor'),
+(18, 5, 'Director'),
+(19, 5, 'Writer'),
+(20, 5, 'Actor'),
+(21, 5, 'Actor'),
+(22, 5, 'Actor'),
+(18, 6, 'Director'),
+(18, 6, 'Writer'),
+(19, 6, 'Writer'),
+(21, 6, 'Actor'),
+(23, 6, 'Actor'),
+(24, 6, 'Actor'),
+(25, 7, 'Director'),
+(25, 7, 'Writer'),
+(26, 7, 'Writer'),
+(27, 7, 'Actor'),
+(28, 7, 'Actor'),
+(29, 7, 'Actor'),
+(30, 8, 'Director'),
+(31, 8, 'Writer'),
+(32, 8, 'Writer'),
+(33, 8, 'Actor'),
+(34, 8, 'Actor'),
+(35, 8, 'Actor'),
+(3, 9, 'Writer'),
+(4, 9, 'Actor'),
+(5, 9, 'Actor'),
+(6, 9, 'Actor'),
+(36, 9, 'Writer'),
+(37, 9, 'Writer'),
+(38, 9, 'Director'),
+(39, 10, 'Director'),
+(39, 10, 'Writer'),
+(40, 10, 'Writer'),
+(42, 10, 'Actor'),
+(43, 10, 'Actor'),
+(44, 10, 'Actor'),
+(45, 10, 'Actor'),
+(47, 11, 'Director'),
+(47, 11, 'Writer'),
+(48, 11, 'Writer'),
+(49, 11, 'Writer'),
+(50, 11, 'Actor'),
+(51, 11, 'Actor'),
+(52, 11, 'Actor'),
+(53, 11, 'Actor'),
+(3, 12, 'Director'),
+(3, 12, 'Writer'),
+(4, 12, 'Actor'),
+(5, 12, 'Actor'),
+(6, 12, 'Actor'),
+(7, 12, 'Actor'),
+(54, 13, 'Director'),
+(55, 13, 'Writer'),
+(56, 13, 'Actor'),
+(57, 13, 'Actor'),
+(58, 13, 'Actor'),
+(59, 14, 'Director'),
+(60, 14, 'Writer'),
+(61, 14, 'Writer'),
+(62, 14, 'Actor'),
+(63, 14, 'Actor'),
+(64, 14, 'Actor'),
+(65, 15, 'Director'),
+(65, 15, 'Writer'),
+(66, 15, 'Writer'),
+(67, 15, 'Actor'),
+(68, 15, 'Actor'),
+(69, 15, 'Actor'),
+(33, 16, 'Actor'),
+(39, 16, 'Director'),
+(39, 16, 'Writer'),
+(41, 16, 'Writer'),
+(42, 16, 'Actor'),
+(45, 16, 'Actor');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `customer`
+--
+
+CREATE TABLE IF NOT EXISTS `customer` (
+  `person_id` int(11) NOT NULL,
+  `street` varchar(256) NOT NULL,
+  `city` varchar(256) NOT NULL,
+  `state` varchar(2) NOT NULL,
+  `zipcode` varchar(9) NOT NULL,
+  `card_number` varchar(16) NOT NULL,
+  `exp_date` date NOT NULL,
+  PRIMARY KEY (`person_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `customer`
+--
+
+INSERT INTO `customer` (`person_id`, `street`, `city`, `state`, `zipcode`, `card_number`, `exp_date`) VALUES
+(47, '73 Colony Manor Dr', 'Rochester', 'NY', '14623', '666666666666666', '2010-02-18');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `dvd`
+--
+
+CREATE TABLE IF NOT EXISTS `dvd` (
+  `dvd_id` int(11) NOT NULL AUTO_INCREMENT,
+  `format` varchar(256) NOT NULL COMMENT 'pal / ntsc',
+  PRIMARY KEY (`dvd_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+
+--
+-- Dumping data for table `dvd`
+--
+
+INSERT INTO `dvd` (`dvd_id`, `format`) VALUES
+(1, 'DVD'),
+(2, 'DVD'),
+(3, 'Blu-ray'),
+(4, 'DVD');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `dvd_movie`
+--
+
+CREATE TABLE IF NOT EXISTS `dvd_movie` (
+  `movie_id` int(11) NOT NULL,
+  `dvd_id` int(11) NOT NULL,
+  `release_date` date NOT NULL,
+  PRIMARY KEY (`movie_id`,`dvd_id`),
+  KEY `dvd_id` (`dvd_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `dvd_movie`
+--
+
+INSERT INTO `dvd_movie` (`movie_id`, `dvd_id`, `release_date`) VALUES
+(2, 2, '2010-02-02'),
+(2, 3, '2008-01-01'),
+(2, 4, '2008-01-01'),
+(15, 1, '2008-06-24');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `employee`
+--
+
+CREATE TABLE IF NOT EXISTS `employee` (
+  `person_id` int(11) NOT NULL,
+  `position` varchar(256) NOT NULL,
+  `hire_date` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`person_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `employee`
+--
+
+INSERT INTO `employee` (`person_id`, `position`, `hire_date`) VALUES
+(7, 'General Manager', '2010-02-18 01:41:17');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `employee_store`
+--
+
+CREATE TABLE IF NOT EXISTS `employee_store` (
+  `store_id` int(11) NOT NULL,
+  `employee_id` int(11) NOT NULL,
+  PRIMARY KEY (`store_id`,`employee_id`),
+  KEY `employee_id` (`employee_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `employee_store`
+--
+
+INSERT INTO `employee_store` (`store_id`, `employee_id`) VALUES
+(1, 7);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `inventory`
+--
+
+CREATE TABLE IF NOT EXISTS `inventory` (
+  `store_id` int(11) NOT NULL,
+  `in_stock` tinyint(1) NOT NULL DEFAULT '1',
+  `price_per_day` float NOT NULL,
+  `dvd_id` int(11) NOT NULL,
+  PRIMARY KEY (`store_id`,`dvd_id`),
+  KEY `dvd_id` (`dvd_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `inventory`
+--
+
+INSERT INTO `inventory` (`store_id`, `in_stock`, `price_per_day`, `dvd_id`) VALUES
+(1, 1, 1.5, 1),
+(1, 1, 2, 2),
+(1, 1, 1.75, 3),
+(1, 1, 1, 4);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `movie`
+--
+
+CREATE TABLE IF NOT EXISTS `movie` (
+  `movie_id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(256) NOT NULL,
+  `genre` varchar(256) NOT NULL,
+  PRIMARY KEY (`movie_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=17 ;
+
+--
+-- Dumping data for table `movie`
+--
+
+INSERT INTO `movie` (`movie_id`, `title`, `genre`) VALUES
+(1, 'Avatar', 'action,adventure'),
+(2, 'Zombieland', 'action,comedy'),
+(3, 'Resident Evil: Extinction', 'action,horror,sci-fi,thriller'),
+(4, 'The Shawshank Redemption', 'crime,drama'),
+(5, 'The Godfather', 'crime,drama'),
+(6, 'The Godfather: Part II', 'crime,drama,thriller'),
+(7, 'Pulp Fiction', 'crime,drama'),
+(8, 'Schindler''s List', 'biography,drame,history,war'),
+(9, 'Star Wars: Episode V - The Empire Strikes Back', 'action,adventure,sci-fi'),
+(10, 'The Dark Knight', 'action,crime,drama,thriller'),
+(11, 'The Lord of the Rings: The Return of the King', 'action,adventure,fantasy'),
+(12, 'Star Wars', 'action, adventure, fantasy, sci-fi'),
+(13, 'Goodfellas', 'biography,crime,drama'),
+(14, 'Casablanca', 'drama,romance,war'),
+(15, '10,000 BC', 'adventure,romance,suspense/thriller'),
+(16, 'Batman Begins', 'action,crime,thriller');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `person`
+--
+
+CREATE TABLE IF NOT EXISTS `person` (
+  `person_id` int(11) NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(256) NOT NULL,
+  `last_name` varchar(256) NOT NULL,
+  PRIMARY KEY (`person_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=76 ;
+
+--
+-- Dumping data for table `person`
+--
+
+INSERT INTO `person` (`person_id`, `first_name`, `last_name`) VALUES
+(1, 'James', 'Cameron'),
+(2, 'Sam', 'Worthington'),
+(3, 'George', 'Lucas'),
+(4, 'Mark', 'Hamill'),
+(5, 'Harrison', 'Ford'),
+(6, 'Carrie', 'Fisher'),
+(7, 'Peter', 'Cushing'),
+(8, 'Russell', 'Mulcahy'),
+(9, 'Paul', 'Anderson'),
+(10, 'Milla', 'Jovovich'),
+(11, 'Oded', 'Fehr'),
+(12, 'Ali', 'Larter'),
+(13, 'Frank', 'Darabont'),
+(14, 'Stephen', 'King'),
+(15, 'Tim', 'Robbins'),
+(16, 'Morgan', 'Freeman'),
+(17, 'Bob', 'Gunton'),
+(18, 'Francis', 'Coppola'),
+(19, 'Mario', 'Puzo'),
+(20, 'Marlon', 'Brando'),
+(21, 'Al', 'Pacino'),
+(22, 'James', 'Caan'),
+(23, 'Robert', 'Devall'),
+(24, 'Diane', 'Keaton'),
+(25, 'Quentin', 'Tarantino'),
+(26, 'Roger', 'Avery'),
+(27, 'John', 'Travolta'),
+(28, 'Samuel', 'Jackson'),
+(29, 'Tim', 'Roth'),
+(30, 'Steven', 'Spielberg'),
+(31, 'Thomas', 'Keneally'),
+(32, 'Steven', 'Zaillian'),
+(33, 'Liam', 'Neeson'),
+(34, 'Ben', 'Kingsley'),
+(35, 'Ralph', 'Fiennes'),
+(36, 'Leigh', 'Brackett'),
+(37, 'Lawrence', 'Kasdan'),
+(38, 'Irvin', 'Kershner'),
+(39, 'Christopher', 'Nolan'),
+(40, 'Jonathan', 'Nolan'),
+(41, 'David', 'Goyer'),
+(42, 'Christian', 'Bale'),
+(43, 'Heath', 'Ledger'),
+(44, 'Aaron', 'Eckhart'),
+(45, 'Michael', 'Caine'),
+(46, 'Peter', 'Jackson'),
+(47, 'J.R.R.', 'Tolkien'),
+(48, 'Fran', 'Walsh'),
+(49, 'Philippa', 'Boyens'),
+(50, 'Noel', 'Appleby'),
+(51, 'Alexandra', 'Astin'),
+(52, 'Sean', 'Astin'),
+(53, 'Orlando', 'Bloom'),
+(54, 'Martin', 'Scorsese'),
+(55, 'Nicholas', 'Pileggi'),
+(56, 'Robert', 'DeNiro'),
+(57, 'Ray', 'Liotta'),
+(58, 'Joe', 'Pesci'),
+(59, 'Michael', 'Curtiz'),
+(60, 'Julius', 'Epstein'),
+(61, 'Philip', 'Epstein'),
+(62, 'Humphrey', 'Bogart'),
+(63, 'Ingrid', 'Bergman'),
+(64, 'Paul', 'Henreid'),
+(65, 'Roland', 'Emmerich'),
+(66, 'Harald', 'Kloser'),
+(67, 'Steven', 'Strait'),
+(68, 'Camilla', 'Belle'),
+(69, 'Cliff', 'Curtis'),
+(70, 'Ruben', 'Fleischer'),
+(71, 'Rhett', 'Reese'),
+(72, 'Paul', 'Wernick'),
+(73, 'Woody', 'Harrelson'),
+(74, 'Jesse', 'Eisenberg'),
+(75, 'Emma', 'Stone');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `publisher`
+--
+
+CREATE TABLE IF NOT EXISTS `publisher` (
+  `name` varchar(256) NOT NULL,
+  `street` varchar(256) NOT NULL,
+  `city` varchar(256) NOT NULL,
+  `state` varchar(2) NOT NULL,
+  `zipcode` varchar(9) NOT NULL,
+  `phone` varchar(11) NOT NULL,
+  PRIMARY KEY (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `publisher`
+--
+
+INSERT INTO `publisher` (`name`, `street`, `city`, `state`, `zipcode`, `phone`) VALUES
+('Castle Rock Entertainment', '335 N. Maple Dr., Ste. 135', 'Beverly Hills', 'CA', '902103879', '3102852300'),
+('Columbia Pictures', '10202 W. Washington Blvd.', 'Culver City', 'CA', '90232', '3102444000'),
+('Lucasfilm', '1110 Gorgas Ave.', 'San Francisco', 'CA', '94129', '4156621800'),
+('Marimax Films', '161 Avenue of the Americas', 'New York', 'NY', '10013', '9176065500'),
+('New Line Cinema', '4000 Warner Blvd', 'Burbank', 'CA', '91522', '8189546000'),
+('Paramount Pictures', '5555 Melrose Ave., Ste. 121', 'Hollywood', 'CA', '90038', '3239565000'),
+('Resident Evil Productions', '', 'Los Angeles', 'CA', '', ''),
+('Twentieth Century-Fox Film Corporation', '10201 W. Pico Blvd.', 'Los Angeles', 'CA', '90064', '3103691000'),
+('Universal Pictures', '100 Universal City Plaza', 'Universal City', 'CA', '91608', '8187771000'),
+('Warner Bros. Entertainment', '4000 Warner Blvd', 'Burbank', 'CA', '91522', '8189546000');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `publisher_movie`
+--
+
+CREATE TABLE IF NOT EXISTS `publisher_movie` (
+  `publisher_name` varchar(256) NOT NULL,
+  `movie_id` int(11) NOT NULL,
+  `distribution_date` date NOT NULL,
+  PRIMARY KEY (`publisher_name`,`movie_id`),
+  KEY `movie_id` (`movie_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `publisher_movie`
+--
+
+INSERT INTO `publisher_movie` (`publisher_name`, `movie_id`, `distribution_date`) VALUES
+('Castle Rock Entertainment', 4, '1994-09-23'),
+('Lucasfilm', 9, '1980-05-21'),
+('Lucasfilm', 12, '1977-05-25'),
+('Marimax Films', 7, '1994-10-14'),
+('New Line Cinema', 11, '2003-12-17'),
+('Paramount Pictures', 5, '1972-03-24'),
+('Paramount Pictures', 6, '1974-12-20'),
+('Resident Evil Productions', 3, '2007-09-21'),
+('Twentieth Century-Fox Film Corporation', 1, '2010-12-18'),
+('Universal Pictures', 2, '2009-10-02'),
+('Universal Pictures', 8, '1993-12-15'),
+('Warner Bros. Entertainment', 10, '2008-07-18'),
+('Warner Bros. Entertainment', 13, '1990-09-19'),
+('Warner Bros. Entertainment', 14, '1943-01-23'),
+('Warner Bros. Entertainment', 15, '2008-03-07'),
+('Warner Bros. Entertainment', 16, '2005-06-15');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `store`
+--
+
+CREATE TABLE IF NOT EXISTS `store` (
+  `store_id` int(11) NOT NULL AUTO_INCREMENT,
+  `street` varchar(256) NOT NULL,
+  `city` varchar(256) NOT NULL,
+  `state` varchar(2) NOT NULL,
+  `zipcode` varchar(5) NOT NULL,
+  `date_opened` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`store_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `store`
+--
+
+INSERT INTO `store` (`store_id`, `street`, `city`, `state`, `zipcode`, `date_opened`) VALUES
+(1, '1 Lomb Memorial Drive', 'Rochester', 'NY', '14623', '2010-02-13 12:48:01');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `transaction`
+--
+
+CREATE TABLE IF NOT EXISTS `transaction` (
+  `trans_id` int(11) NOT NULL AUTO_INCREMENT,
+  `dvd_id` int(11) NOT NULL,
+  `customer_id` int(11) NOT NULL,
+  `trans_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`trans_id`,`dvd_id`,`customer_id`),
+  UNIQUE KEY `trans_id` (`trans_id`),
+  KEY `dvd_id` (`dvd_id`),
+  KEY `customer_id` (`customer_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `transaction`
+--
+
+INSERT INTO `transaction` (`trans_id`, `dvd_id`, `customer_id`, `trans_date`) VALUES
+(1, 1, 47, '2010-02-18 00:43:29');
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `cast_and_crew`
+--
+ALTER TABLE `cast_and_crew`
+  ADD CONSTRAINT `cast_and_crew_ibfk_3` FOREIGN KEY (`cac_id`) REFERENCES `person` (`person_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `cast_and_crew_ibfk_2` FOREIGN KEY (`movie_id`) REFERENCES `movie` (`movie_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `customer`
+--
+ALTER TABLE `customer`
+  ADD CONSTRAINT `customer_ibfk_1` FOREIGN KEY (`person_id`) REFERENCES `person` (`person_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `dvd_movie`
+--
+ALTER TABLE `dvd_movie`
+  ADD CONSTRAINT `dvd_movie_ibfk_1` FOREIGN KEY (`movie_id`) REFERENCES `movie` (`movie_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `dvd_movie_ibfk_2` FOREIGN KEY (`dvd_id`) REFERENCES `dvd` (`dvd_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `employee`
+--
+ALTER TABLE `employee`
+  ADD CONSTRAINT `employee_ibfk_1` FOREIGN KEY (`person_id`) REFERENCES `person` (`person_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `employee_store`
+--
+ALTER TABLE `employee_store`
+  ADD CONSTRAINT `employee_store_ibfk_2` FOREIGN KEY (`employee_id`) REFERENCES `employee` (`person_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `employee_store_ibfk_1` FOREIGN KEY (`store_id`) REFERENCES `store` (`store_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `inventory`
+--
+ALTER TABLE `inventory`
+  ADD CONSTRAINT `inventory_ibfk_2` FOREIGN KEY (`dvd_id`) REFERENCES `dvd` (`dvd_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `inventory_ibfk_1` FOREIGN KEY (`store_id`) REFERENCES `store` (`store_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `publisher_movie`
+--
+ALTER TABLE `publisher_movie`
+  ADD CONSTRAINT `publisher_movie_ibfk_1` FOREIGN KEY (`movie_id`) REFERENCES `movie` (`movie_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `publisher_movie_ibfk_2` FOREIGN KEY (`publisher_name`) REFERENCES `publisher` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `transaction`
+--
+ALTER TABLE `transaction`
+  ADD CONSTRAINT `transaction_ibfk_1` FOREIGN KEY (`dvd_id`) REFERENCES `dvd` (`dvd_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `transaction_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`person_id`) ON DELETE CASCADE ON UPDATE CASCADE;
