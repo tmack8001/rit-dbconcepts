@@ -118,10 +118,9 @@ namespace rit_dbconcepts
             connection.Open();
             Reader = command.ExecuteReader();
 
-            while (Reader.Read())
-            {
-                retVal = TypeFactory.readMovie(Reader);
-            }
+            Reader.Read();
+            retVal = TypeFactory.readMovie(Reader);
+
             //some function in TypeFactor(Reader);
             connection.Close();
             return retVal;
@@ -334,7 +333,7 @@ namespace rit_dbconcepts
 
             while (Reader.Read())
             {
-                TypeFactory.readStore(Reader);
+                retList.Add(TypeFactory.readStore(Reader));
             }
 
             //some function in TypeFactor(Reader);
@@ -361,7 +360,7 @@ namespace rit_dbconcepts
             {
                 TypeFactory.readStore(Reader);
             }
-            //some function in TypeFactor(Reader);
+
             connection.Close();
             return retList;
         }
@@ -383,7 +382,7 @@ namespace rit_dbconcepts
 
             while (Reader.Read())
             {
-                TypeFactory.readStore(Reader);
+                retList.Add(TypeFactory.readStore(Reader));
             }
 
             //some function in TypeFactor(Reader);
@@ -476,6 +475,7 @@ namespace rit_dbconcepts
         public List<DVD> getDvds()
         {
             List<DVD> retList = new List<DVD>();
+            List<int> movieIds = new List<int>();
 
             String queryStr = "SELECT d.dvd_id, d.format, m.movie_id, dm.release_date" +
                 " FROM dvd as d, dvd_movie as dm" +
@@ -488,14 +488,24 @@ namespace rit_dbconcepts
             connection.Open();
             Reader = command.ExecuteReader();
 
-            //some function in TypeFactor(Reader);
+            while (Reader.Read())
+            {
+                retList.Add(TypeFactory.readDvd(Reader));
+                movieIds.Add(Reader.GetInt16(Reader.GetOrdinal("movie_id")));
+            }
+
+            for (int i=0; i<retList.Count; ++i)
+            {
+                retList[i].Movie = getMovieById(movieIds[i]);
+            }
+
             connection.Close();
             return retList;
         }
 
-        public List<DVD> getDvdsById(int id)
+        public DVD getDvdsById(int id)
         {
-            List<DVD> retList = new List<DVD>();
+            DVD retVal;
 
             String queryStr = "SELECT d.dvd_id, d.format, m.movie_id, dm.release_date" +
                 " FROM dvd as d, dvd_movie as dm" +
@@ -508,14 +518,19 @@ namespace rit_dbconcepts
             connection.Open();
             Reader = command.ExecuteReader();
 
+            Reader.Read();
+            retVal = TypeFactory.readDvd(Reader);
+            retVal.Movie = getMovieById(Reader.GetInt16(Reader.GetOrdinal("movie_id")));
+
             //some function in TypeFactor(Reader);
             connection.Close();
-            return retList;
+            return retVal;
         }
 
         public List<DVD> getDvdsByMovieId(int id)
         {
             List<DVD> retList = new List<DVD>();
+            List<int> movieIds = new List<int>();
 
             String queryStr = "SELECT d.dvd_id, d.format, m.movie_id, dm.release_date" +
                 " FROM dvd as d, dvd_movie as dm" +
@@ -527,6 +542,17 @@ namespace rit_dbconcepts
 
             connection.Open();
             Reader = command.ExecuteReader();
+
+            while (Reader.Read())
+            {
+                retList.Add(TypeFactory.readDvd(Reader));
+                movieIds.Add(Reader.GetInt16(Reader.GetOrdinal("movie_id")));
+            }
+
+            for (int i = 0; i < retList.Count; ++i)
+            {
+                retList[i].Movie = getMovieById(movieIds[i]);
+            }
 
             //some function in TypeFactor(Reader);
             connection.Close();
