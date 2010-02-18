@@ -1,4 +1,3 @@
-
 using System;
 using System.Drawing;
 using System.Collections;
@@ -17,6 +16,7 @@ namespace rit_dbconcepts
 		private Form info;
 		private TabPage movieLookup;
 		private TabPage custLookup;
+        private TabPage empLookup;
 		private DataAccessLayer DAL;
 		
 		
@@ -48,6 +48,17 @@ namespace rit_dbconcepts
 		private Button custInfoButton;
 		private Button custCheckIO;
 		private Button addNewCust;
+
+        //EmpInfo Page
+        private Label employeeHeader;
+
+        private TextBox employee;
+        private TextBox position;
+
+        private ListBox empResults;
+
+        private Button empSubmit;
+        private Button empInfoButton;
 		
         // Tabbed Layout
         private TabControl tabs;
@@ -65,12 +76,16 @@ namespace rit_dbconcepts
         	
             // Create CusInfo page object
         	custLookup = initCustLookup ();
+
+            // Create EmpInfo page object
+            empLookup = initEmpLookup();
         	
             // Set windows prefs and add components
         	this.ClientSize = new Size (800, 600);
         	
             tabs.Controls.Add (movieLookup);
         	tabs.Controls.Add (custLookup);
+            tabs.Controls.Add(empLookup);
 
             tabs.Size = new Size (800, 600);
 			
@@ -383,10 +398,14 @@ namespace rit_dbconcepts
         	this.custSubmit.Name = "CustSubmitButton";
         	this.custSubmit.TabIndex = 3;
         	this.custSubmit.Text = "Lookup";
-        		
-        		
+        	
         	this.custSubmit.Click += delegate(object sender, EventArgs e) {
-                String[] names = customer.Text.Trim().Split();
+                String[] names = {"", ""};
+                if( customer.Text.Trim().IndexOf(" ") > 0 ) {
+                    names = customer.Text.Trim().Split();
+                }else {
+                    names[1] = customer.Text.Trim();
+                }
 
                 custResults.Items.Clear();
                 foreach (Customer cust in DAL.getCustomersByFullName(names[0], names[1]))
@@ -456,6 +475,99 @@ namespace rit_dbconcepts
 			CusInfo.Controls.Add (this.custCheckIO);
 			CusInfo.Controls.Add( this.addNewCust);
             return CusInfo;
+        }
+
+        private TabPage initEmpLookup()
+        {
+            TabPage EmpInfo = new TabPage("Employee Lookup");
+            this.employeeHeader = new Label();
+            this.employee = new TextBox();
+            this.position = new TextBox();
+            this.empResults = new ListBox();
+            this.empSubmit = new Button();
+            this.empInfoButton = new Button();
+
+            this.employeeHeader.Location = new Point(325, 10);
+            this.employeeHeader.Name = "EmployeeHeader";
+            this.employeeHeader.Size = new Size(300, 20);
+            this.employeeHeader.Text = "Employee Lookup";
+
+            this.employee.Location = new Point(30, 50);
+            this.employee.Name = "EmployeeField";
+            this.employee.Size = new Size(700, 32);
+            this.employee.Text = "Enter employee name";
+            this.employee.TabIndex = 1;
+
+            this.position.Location = new Point(30, 100);
+            this.position.Name = "PositionField";
+            this.position.Size = new Size(700, 32);
+            this.position.TabIndex = 2;
+            this.position.Text = "Enter a position to search";
+
+            this.empResults.Location = new Point(30, 200);
+            this.empResults.Name = "Results";
+            this.empResults.Size = new Size(700, 300);
+            this.empResults.SelectedValueChanged += delegate
+            {
+                if (empResults.Items.Count > 0)
+                {
+                    this.empInfoButton.Enabled = true;
+                }
+                else
+                {
+                    this.empInfoButton.Enabled = false;
+                }
+            };
+            empResults.Items.Add("Add a new customer");
+
+            // CustSubmit
+            this.empSubmit.Location = new Point(250, 550);
+            this.empSubmit.Name = "EmpSubmitButton";
+            this.empSubmit.TabIndex = 3;
+            this.empSubmit.Text = "Lookup";
+
+            this.empSubmit.Click += delegate(object sender, EventArgs e)
+            {
+                String[] names = { "", "" };
+                if (this.employee.Text.Trim().IndexOf(" ") > 0)
+                {
+                    names = this.employee.Text.Trim().Split();
+                }
+                else
+                {
+                    names[1] = this.employee.Text.Trim();
+                }
+
+                this.empResults.Items.Clear();
+                foreach (Employee emp in DAL.getEmployeesByFullName(names[0], names[1]))
+                {
+                    this.empResults.Items.Add(emp);
+                }
+
+            };
+
+            // CustInfoButton
+            this.empInfoButton.Location = new Point(325, 550);
+            this.empInfoButton.Name = "EmpInfoButton";
+            this.empInfoButton.TabIndex = 4;
+            this.empInfoButton.Text = "Info";
+            this.empInfoButton.Enabled = false;
+            this.empInfoButton.Click += delegate(object sender, EventArgs e)
+            {
+                foreach (Employee sel in this.empResults.SelectedItems)
+                {
+                    infoPanel("Employee", sel);
+                }
+            };
+
+            EmpInfo.Controls.Add(this.employeeHeader);
+            EmpInfo.Controls.Add(this.employee);
+            EmpInfo.Controls.Add(this.position);
+            EmpInfo.Controls.Add(this.empResults);
+            EmpInfo.Controls.Add(this.empSubmit);
+            EmpInfo.Controls.Add(this.empInfoButton);
+
+            return EmpInfo;
         }
 
         public void infoPanel (String title, Object selection)
@@ -549,7 +661,6 @@ namespace rit_dbconcepts
 				L6.Text = "Publisher";
 				info.Controls.Add( L6);
 				info.Controls.Add (T6);
-				
 			} else if( title.ToLower().Equals( "customer" )){
 
                 Customer data = (Customer)selection;
@@ -568,7 +679,6 @@ namespace rit_dbconcepts
                 T3.Text = selection == null ? "Enter Card Number Here" : data.CardNumber.ToString();
 				info.Controls.Add (L3);
 				info.Controls.Add (T3);
-				
 				L4.Text = "Card Expiration Date";
                 T4.Text = selection == null ? "Enter expiration date here" : data.ExpDate.ToString();
 				info.Controls.Add( L4 );
