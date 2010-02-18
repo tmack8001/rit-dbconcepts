@@ -746,16 +746,11 @@ namespace rit_dbconcepts
         private void updateMovie(Movie movie, Publisher publisher)
         {
             updateMovie(movie);
-            /*UPDATE table_name
-            SET column1=value, column2=value2,...
-            WHERE some_column=some_value*/
             
-            String queryStr = "UPDATE publisher_movie";/* +
-                " SET publisher_name = " + publisher.Name + ", movie_id = " + inventory.IsInStock + ", " +
-                " price_per_day = " + inventory.PricePerDay +
-                " dvd_id = " + inventory.Item.Id +
-                " WHERE dvd_id = " + inventory.Item.Id;
-            */
+            String queryStr = "UPDATE publisher_movie" +
+                " SET distribution_date = " + movie.DistroDate +
+                " WHERE publisher_name = " + publisher.Name + " AND movie_id = " + movie.Id;
+            
             command = connection.CreateCommand();
             command.CommandText = queryStr;
 
@@ -792,7 +787,19 @@ namespace rit_dbconcepts
 
         private void updateMovie(Movie movie)
         {
-            throw new NotImplementedException();
+            String genres = String.Join(",", movie.Genres.ToArray<String>());
+
+            String queryStr = "UPDATE movie" +
+                " SET title = " + movie.Title + ", genre = " + genres +
+                " WHERE movie_id = " + movie.Id;
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            connection.Close();
         }
 
         public int insertPerson(Person person)
@@ -822,7 +829,17 @@ namespace rit_dbconcepts
 
         private void updatePerson(Person person)
         {
-            throw new NotImplementedException();
+            String queryStr = "UPDATE person" +
+                " SET first_name = " + person.FirstName + ", last_name = " + person.LastName +
+                " WHERE person_id = " + person.Id;
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            connection.Close();
         }
 
         public int insertCustomer(Customer customer)
@@ -857,7 +874,19 @@ namespace rit_dbconcepts
 
         private void updateCustomer(Customer customer)
         {
-            throw new NotImplementedException();
+            String queryStr = "UPDATE customer" +
+                " SET street = " + customer.BillAddress.Street + ", city = " + customer.BillAddress.City +
+                " state = " + customer.BillAddress.State + ", zipcode = " + customer.BillAddress.ZipCode +
+                " card_number = " + customer.CardNumber + ", exp_date = " + customer.ExpDate.Date.ToString("d") +
+                " WHERE person_id = " + customer.Id;
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            connection.Close();
         }
 
         public int insertEmployee(Employee employee, Store store)
@@ -890,7 +919,22 @@ namespace rit_dbconcepts
 
         private void updateEmployee(Employee employee, Store store)
         {
-            throw new NotImplementedException();
+            updateEmployee(employee);
+            /* NOT SURE WHAT IS WANTED IN THIS CASE??
+            
+            String queryStr = "UPDATE employee_store" +
+                " SET street = " + customer.BillAddress.Street + ", city = " + customer.BillAddress.City +
+                " state = " + customer.BillAddress.State + ", zipcode = " + customer.BillAddress.ZipCode +
+                " card_number = " + customer.CardNumber + ", exp_date = " + customer.ExpDate.Date.ToString("d") +
+                " WHERE person_id = " + customer.Id;
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            connection.Close();*/
         }
 
         public int insertEmployee(Employee employee)
@@ -923,7 +967,17 @@ namespace rit_dbconcepts
 
         private void updateEmployee(Employee employee)
         {
-            throw new NotImplementedException();
+            String queryStr = "UPDATE employee" +
+                " SET position = " + employee.Position + ", hire_date = " + employee.HireDate +
+                " WHERE person_id = " + employee.Id;
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            connection.Close();
         }
 
         public String insertPublisher(Publisher publisher, Movie movie)
@@ -967,7 +1021,19 @@ namespace rit_dbconcepts
 
         private void updatePublisher(Publisher publisher, Movie movie)
         {
-            throw new NotImplementedException();
+            updatePublisher(publisher);
+            
+            String queryStr = "UPDATE publisher_movie" +
+                " SET distribution_date = " + movie.DistroDate +
+                " WHERE publisher_name = " + publisher.Name + " AND movie_id = " + movie.Id;
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            connection.Close();
         }
 
         public String insertPublisher(Publisher publisher)
@@ -987,6 +1053,23 @@ namespace rit_dbconcepts
             connection.Close();
 
             return publisher.Name;
+        }
+
+        private void updatePublisher(Publisher publisher)
+        {
+            String queryStr = "UPDATE publisher" +
+                " SET street = " + publisher.Address.Street + ", city = " + publisher.Address.City +
+                " state = " + publisher.Address.State + ", zipcode = " + publisher.Address.ZipCode +
+                " phone = " + publisher.PhoneNumber +
+                " WHERE name = " + publisher.Name;
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            connection.Close();
         }
 
         public int insertStore(Store store)
@@ -1018,7 +1101,19 @@ namespace rit_dbconcepts
 
         private void updateStore(Store store)
         {
-            throw new NotImplementedException();
+            String queryStr = "UPDATE store" +
+                " SET street = " + store.Address.Street + ", city = " + store.Address.City +
+                " state = " + store.Address.State + ", zipcode = " + store.Address.ZipCode  +
+                " date_opened = " + store.DateOpened + 
+                " WHERE store_id = " + store.StoreId;
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            connection.Close();
         }
 
         public int insertDvd(DVD dvd)
@@ -1055,7 +1150,17 @@ namespace rit_dbconcepts
 
         private void updateDvd(DVD dvd)
         {
-            throw new NotImplementedException();
+            String queryStr = "UPDATE dvd" +
+                " SET format = " + dvd.Format +
+                " WHERE dvd_id = " + dvd.Id;
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            connection.Close();
         }
 
         public int insertTransaction(Transaction transaction)
