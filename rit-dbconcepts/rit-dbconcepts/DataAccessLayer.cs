@@ -438,6 +438,26 @@ namespace rit_dbconcepts
             return retList;
         }
 
+        public List<DVD> getDvdsById(int id)
+        {
+            List<DVD> retList = new List<DVD>();
+
+            String queryStr = "SELECT d.dvd_id, d.format, m.movie_id, dm.release_date" +
+                " FROM dvd as d, dvd_movie as dm" +
+                " RIGHT OUTER JOIN movie as m ON m.movie_id = dm.movie_id" +
+                " WHERE dm_dvd_id = d.dvd_id AND d.dvd_id = " + id;
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            Reader = command.ExecuteReader();
+
+            //some function in TypeFactor(Reader);
+            connection.Close();
+            return retList;
+        }
+
         public List<DVD> getDvdsByMovieId(int id)
         {
             List<DVD> retList = new List<DVD>();
