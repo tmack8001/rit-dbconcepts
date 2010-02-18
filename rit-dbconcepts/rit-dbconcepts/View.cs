@@ -32,6 +32,7 @@ namespace rit_dbconcepts
         private Button submit;
 		private Button infoButton;
 		private Button transaction;
+		private Button addNewMovie;
 
         // CusInfo Page
         private Label customerHeader;
@@ -46,6 +47,7 @@ namespace rit_dbconcepts
         private Button custSubmit;
 		private Button custInfoButton;
 		private Button custCheckIO;
+		private Button addNewCust;
 		
         // Tabbed Layout
         private TabControl tabs;
@@ -88,6 +90,7 @@ namespace rit_dbconcepts
         	this.submit = new Button ();
         	this.infoButton = new Button ();
         	this.transaction = new Button ();
+        	this.addNewMovie = new Button ();
 
             this.windowHeader.Location = new Point (325, 10);
         	this.windowHeader.Name = "label1";
@@ -296,6 +299,11 @@ namespace rit_dbconcepts
 				tabs.SelectedTab = this.custLookup;
 			};
 
+			this.addNewMovie.Location = new Point (475, 550);
+			this.addNewMovie.Name = "AddNewMovie";
+			this.addNewMovie.Text = "Add New";
+			
+			
             Lookup.Controls.Add (this.windowHeader);
             Lookup.Controls.Add (this.movieTitle);
             Lookup.Controls.Add (this.storeLoc);
@@ -306,7 +314,7 @@ namespace rit_dbconcepts
             Lookup.Controls.Add (this.submit);
 			Lookup.Controls.Add( this.infoButton);
 			Lookup.Controls.Add( this.transaction );
-			
+			Lookup.Controls.Add( this.addNewMovie);
 
             return Lookup;
         }
@@ -323,6 +331,7 @@ namespace rit_dbconcepts
         	this.custSubmit = new Button ();
         	this.custInfoButton = new Button ();
         	this.custCheckIO = new Button ();
+        	this.addNewCust = new Button ();
 
             this.customerHeader.Location = new Point (325, 10);
         	this.customerHeader.Name = "CustomerHeader";
@@ -426,7 +435,10 @@ namespace rit_dbconcepts
 			};
 			
 			
-        	
+        	this.addNewCust.Location = new Point( 475, 550);
+			this.addNewCust.Name = "AddNewCust";
+			this.addNewCust.Text = "Add New Customer";
+			
         	CusInfo.Controls.Add (this.customerHeader);
 			CusInfo.Controls.Add( this.selectedMovie);
         	CusInfo.Controls.Add (this.address);
@@ -436,7 +448,7 @@ namespace rit_dbconcepts
         	CusInfo.Controls.Add (this.custSubmit);
 			CusInfo.Controls.Add (this.custInfoButton);
 			CusInfo.Controls.Add (this.custCheckIO);
-			
+			CusInfo.Controls.Add( this.addNewCust);
 
             return CusInfo;
         }
