@@ -18,14 +18,12 @@ namespace rit_dbconcepts.Types
             int dateOrdinal = movieReader.GetOrdinal("distribution_date");
 
             String[] genres = movieReader.GetString(genreOrdinal).Split(',');
-            CastCrewMember[] crew = new CastCrewMember[0];
 
             return new Movie(
                 movieReader.GetInt16(idOrdinal),
                 movieReader.GetString(titleOrdinal),
                 movieReader.GetDateTime(dateOrdinal),
-                genres,
-                crew); 
+                genres); 
         }
 
         public static Person readPerson(DbDataReader personReader)

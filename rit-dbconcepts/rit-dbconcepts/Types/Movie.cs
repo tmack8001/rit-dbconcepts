@@ -13,13 +13,22 @@ namespace rit_dbconcepts.Types
         LinkedList<String> mGenres;
         LinkedList<CastCrewMember> mCastCrew;
 
+        public Movie(int id, String title, DateTime distroDate, String[] genres)
+        {
+            mId = id;
+            mTitle = title;
+            mDistroDate = distroDate;
+            mGenres = new LinkedList<string>(genres);
+            mCastCrew = new LinkedList<CastCrewMember>();
+        }
+
         public Movie(int id, String title, DateTime distroDate, String[] genres, CastCrewMember[] castCrew)
         {
             mId = id;
             mTitle = title;
             mDistroDate = distroDate;
             mGenres = new LinkedList<string>(genres);
-            mCastCrew = new LinkedList<CastCrewMember>(castCrew);
+            mCastCrew = new LinkedList<CastCrewMember>();
         }
 
         public int Id
@@ -48,6 +57,7 @@ namespace rit_dbconcepts.Types
         public LinkedList<CastCrewMember> CastCrew
         {
             get { return mCastCrew; }
+            set { mCastCrew = value; }    
         }
 
         public override String ToString()
