@@ -921,7 +921,7 @@ namespace rit_dbconcepts
             String queryStr = "UPDATE customer" +
                 " SET street = '" + customer.BillAddress.Street + "', city = '" + customer.BillAddress.City + "'" +
                 " state = '" + customer.BillAddress.State + "', zipcode = '" + customer.BillAddress.ZipCode + "'" +
-                " card_number = '" + customer.CardNumber + "', exp_date = '" + customer.ExpDate.Date.ToString("yyyy-MM-dd hh:mm:ss") + "'" +
+                " card_number = '" + customer.CardNumber + "', exp_date = '" + customer.ExpDate.Date.ToString("yyyy-MM-dd") + "'" +
                 " WHERE person_id = " + customer.Id;
 
             command = connection.CreateCommand();
