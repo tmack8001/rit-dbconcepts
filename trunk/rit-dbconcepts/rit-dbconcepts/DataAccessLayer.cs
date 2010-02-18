@@ -748,8 +748,8 @@ namespace rit_dbconcepts
             updateMovie(movie);
             
             String queryStr = "UPDATE publisher_movie" +
-                " SET distribution_date = " + movie.DistroDate +
-                " WHERE publisher_name = " + publisher.Name + " AND movie_id = " + movie.Id;
+                " SET distribution_date = '" + movie.DistroDate + "'" +
+                " WHERE publisher_name = '" + publisher.Name + "' AND movie_id = " + movie.Id;
             
             command = connection.CreateCommand();
             command.CommandText = queryStr;
@@ -790,7 +790,7 @@ namespace rit_dbconcepts
             String genres = String.Join(",", movie.Genres.ToArray<String>());
 
             String queryStr = "UPDATE movie" +
-                " SET title = " + movie.Title + ", genre = " + genres +
+                " SET title = '" + movie.Title + "', genre = '" + genres + "'" +
                 " WHERE movie_id = " + movie.Id;
 
             command = connection.CreateCommand();
@@ -830,7 +830,7 @@ namespace rit_dbconcepts
         private void updatePerson(Person person)
         {
             String queryStr = "UPDATE person" +
-                " SET first_name = " + person.FirstName + ", last_name = " + person.LastName +
+                " SET first_name = '" + person.FirstName + "', last_name = '" + person.LastName + "'" +
                 " WHERE person_id = " + person.Id;
 
             command = connection.CreateCommand();
@@ -875,9 +875,9 @@ namespace rit_dbconcepts
         private void updateCustomer(Customer customer)
         {
             String queryStr = "UPDATE customer" +
-                " SET street = " + customer.BillAddress.Street + ", city = " + customer.BillAddress.City +
-                " state = " + customer.BillAddress.State + ", zipcode = " + customer.BillAddress.ZipCode +
-                " card_number = " + customer.CardNumber + ", exp_date = " + customer.ExpDate.Date.ToString("d") +
+                " SET street = '" + customer.BillAddress.Street + "', city = '" + customer.BillAddress.City + "'" +
+                " state = '" + customer.BillAddress.State + "', zipcode = '" + customer.BillAddress.ZipCode + "'" +
+                " card_number = '" + customer.CardNumber + "', exp_date = '" + customer.ExpDate.Date.ToString("d") + "'" +
                 " WHERE person_id = " + customer.Id;
 
             command = connection.CreateCommand();
@@ -903,7 +903,7 @@ namespace rit_dbconcepts
                 
                 String queryStr = "INSERT INTO employee_store" +
                     " ( store_id, employee_id )" +
-                    " VALUES ( '" + store.StoreId + "', " + employee.Id + " )";
+                    " VALUES ( " + store.StoreId + ", " + employee.Id + " )";
 
                 command = connection.CreateCommand();
                 command.CommandText = queryStr;
@@ -986,7 +986,7 @@ namespace rit_dbconcepts
             String queryStr = "INSERT INTO publisher_movie" +
                 " ( publisher_name, movie_id, distribution_date )" +
                 " VALUES ( '" + publisher.Name + "', " + movie.Id + "," +
-                " " + movie.DistroDate + " )";
+                " '" + movie.DistroDate + "' )";
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
@@ -1007,7 +1007,7 @@ namespace rit_dbconcepts
         public void updateCastAndCrew(CastCrewMember cast, Movie movie)
         {
             String queryStr = "UPDATE cast_and_crew" +
-                " SET job = " + cast.Job +
+                " SET job = '" + cast.Job + "'" +
                 " WHERE cac_id = " + cast.Id + " AND movie_id = " + movie.Id;
 
             command = connection.CreateCommand();
@@ -1024,8 +1024,8 @@ namespace rit_dbconcepts
             updatePublisher(publisher);
             
             String queryStr = "UPDATE publisher_movie" +
-                " SET distribution_date = " + movie.DistroDate +
-                " WHERE publisher_name = " + publisher.Name + " AND movie_id = " + movie.Id;
+                " SET distribution_date = '" + movie.DistroDate + "'" +
+                " WHERE publisher_name = '" + publisher.Name + "' AND movie_id = " + movie.Id;
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
@@ -1040,7 +1040,7 @@ namespace rit_dbconcepts
         {
             String queryStr = "INSERT INTO publisher" +
                 " ( name, street, city, state, zipcode, phone )" +
-                " VALUES ( " + publisher.Name + ", '" + publisher.Address.Street + "'," +
+                " VALUES ( '" + publisher.Name + "', '" + publisher.Address.Street + "'," +
                 " '" + publisher.Address.City + "', '" + publisher.Address.State + "'," +
                 " '" + publisher.Address.ZipCode + "', '" + publisher.PhoneNumber + "' )";
 
@@ -1058,10 +1058,10 @@ namespace rit_dbconcepts
         private void updatePublisher(Publisher publisher)
         {
             String queryStr = "UPDATE publisher" +
-                " SET street = " + publisher.Address.Street + ", city = " + publisher.Address.City +
-                " state = " + publisher.Address.State + ", zipcode = " + publisher.Address.ZipCode +
-                " phone = " + publisher.PhoneNumber +
-                " WHERE name = " + publisher.Name;
+                " SET street = '" + publisher.Address.Street + "', city = '" + publisher.Address.City + "'" +
+                " state = '" + publisher.Address.State + "', zipcode = '" + publisher.Address.ZipCode + "'" +
+                " phone = '" + publisher.PhoneNumber + "'" + 
+                " WHERE name = '" + publisher.Name + "'";
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
@@ -1083,7 +1083,7 @@ namespace rit_dbconcepts
             {
                 String queryStr = "INSERT INTO store" +
                     " ( street, city, state, zipcode, date_opened )" +
-                    " VALUES ( " + store.Address.Street + ", '" + store.Address.City + "'," +
+                    " VALUES ( '" + store.Address.Street + "', '" + store.Address.City + "'," +
                     " '" + store.Address.State + "', '" + store.Address.ZipCode + "'," +
                     " '" + store.DateOpened + "' )";
 
@@ -1102,9 +1102,9 @@ namespace rit_dbconcepts
         private void updateStore(Store store)
         {
             String queryStr = "UPDATE store" +
-                " SET street = " + store.Address.Street + ", city = " + store.Address.City +
-                " state = " + store.Address.State + ", zipcode = " + store.Address.ZipCode  +
-                " date_opened = " + store.DateOpened + 
+                " SET street = '" + store.Address.Street + "', city = '" + store.Address.City + "'" +
+                " state = '" + store.Address.State + "', zipcode = '" + store.Address.ZipCode  + "'" +
+                " date_opened = '" + store.DateOpened + "'" + 
                 " WHERE store_id = " + store.StoreId;
 
             command = connection.CreateCommand();
@@ -1137,7 +1137,7 @@ namespace rit_dbconcepts
 
                 queryStr = "INSERT INTO dvd_movie" +
                     " ( movie_id, dvd_id, release_date ) " +
-                    " VALUES ( " + dvd.Movie.Id + ", " + dvd.Id + ", " + dvd.ReleaseDate + " )";
+                    " VALUES ( " + dvd.Movie.Id + ", " + dvd.Id + ", '" + dvd.ReleaseDate + "' )";
 
                 command = connection.CreateCommand();
                 command.CommandText = queryStr;
@@ -1151,7 +1151,7 @@ namespace rit_dbconcepts
         private void updateDvd(DVD dvd)
         {
             String queryStr = "UPDATE dvd" +
-                " SET format = " + dvd.Format +
+                " SET format = '" + dvd.Format + "'" +
                 " WHERE dvd_id = " + dvd.Id;
 
             command = connection.CreateCommand();
