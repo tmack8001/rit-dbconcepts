@@ -27,7 +27,6 @@ namespace rit_dbconcepts
         private TextBox movieTitle;
         private TextBox genre;
         private TextBox publisher;
-        private TextBox castCrewMember;
         private ListBox results;
 
         private Button submit;
@@ -83,7 +82,6 @@ namespace rit_dbconcepts
             this.windowHeader = new Label ();
         	this.storeLoc = new TextBox ();
         	this.movieTitle = new TextBox ();
-        	this.castCrewMember = new TextBox ();
         	this.genre = new TextBox ();
         	this.publisher = new TextBox ();
         	this.results = new ListBox ();
@@ -110,31 +108,24 @@ namespace rit_dbconcepts
         	this.storeLoc.Text = "Enter a town/city";
         	this.storeLoc.TabIndex = 2;
         	
-        	// Cast/Crew Search
-        	this.castCrewMember.Location = new Point (30, 150);
-        	this.castCrewMember.Size = new Size (700, 32);
-        	this.castCrewMember.Name = "CastCrew";
-        	this.castCrewMember.Text = "Enter a cast or crew member";
-        	this.castCrewMember.TabIndex = 3;
-        	
         	// Genre
-        	this.genre.Location = new Point (30, 200);
+        	this.genre.Location = new Point (30, 150);
         	this.genre.Size = new Size (700, 32);
         	this.genre.Name = "Genre";
         	this.genre.Text = "Enter a genre";
         	this.genre.TabIndex = 4;
         	
         	// publisher
-        	this.publisher.Location = new Point (30, 250);
+        	this.publisher.Location = new Point (30, 200);
         	this.publisher.Size = new Size (700, 32);
         	this.publisher.Name = "Publisher";
         	this.publisher.Text = "Enter a publisher";
         	this.publisher.TabIndex = 5;
         	
         	//results ListBox
-        	this.results.Location = new Point (30, 300);
+        	this.results.Location = new Point (30, 250);
         	this.results.Name = "Results";
-        	this.results.Size = new Size (700, 250);
+        	this.results.Size = new Size (700, 300);
         	this.results.SelectedValueChanged += delegate {
         		if (results.Items.Count > 0) {
         			this.infoButton.Enabled = true;
@@ -158,15 +149,36 @@ namespace rit_dbconcepts
         		
         		bool incTitle = !this.movieTitle.Text.Trim ().Equals ("Enter a movie title");
         		bool incStoreLoc = !this.storeLoc.Text.Trim ().Equals ("Enter a town/city");
-        		bool incCastCrewMember = !this.castCrewMember.Text.Trim ().Equals ("Enter a cast or crew member");
         		bool incGenre = !this.genre.Text.Trim ().Equals ("Enter a genre");
         		bool incPublisher = !this.publisher.Text.Trim ().Equals ("Enter a publisher");
         		
-        		if (incTitle) {
+        		if (this.movieTitle.Text.Trim ().Equals ("")) {
+        			incTitle = false;
+        		}
+        		if (this.storeLoc.Text.Trim ().Equals ("")) {
+        			incStoreLoc = false;
+        		}
+				if (this.genre.Text.Trim ().Equals ("")) {
+        			incGenre = false;
+        		}
+        		if (this.publisher.Text.Trim ().Equals ("")) {
+        			incPublisher = false;
+				}
+        				
+        		if (incTitle && incStoreLoc) {
+        			List<Store> store = DAL.getStoreByCity (this.storeLoc.Text.Trim ());
+        			foreach (Store s in DAL.getStoreByCity (storeLoc.Text)) {
+        				foreach (StockItem si in s.Inventory) {
+        					if (si.Item.Movie.Title.Equals (this.movieTitle.Text.Trim ())) {
+        						moviesInDb.Add (si.Item.Movie);
+        					}
+        				}
+					}
+				} else if (incTitle) {
         			System.Console.Out.WriteLine ("Search Title");
         			
         			if (incStoreLoc) {
-        				List<Movie> found = new List<Movie> ();
+						List<Movie> found = new List<Movie> ();
         				List<Store> store = DAL.getStoreByCity (this.storeLoc.Text.Trim ());
         				Store s = null;
         				Movie m = null;
@@ -241,13 +253,26 @@ namespace rit_dbconcepts
 					}
 				} else if( incPublisher){
 					
-					moviesInDb = DAL.getMoviesByPublisher( this.publisher.Text.Trim());
+					if( incTitle ){
+						List<Movie> match = new List<Movie>();
+						foreach( Movie m in DAL.getMoviesByPublisher( this.publisher.Text.Trim() )){
+							if( m.Title.Equals( this.movieTitle.Text.Trim())){ 
+								match.Add( m );
+							}
+						}
+						moviesInDb = match;
+					} else {
+						moviesInDb = DAL.getMoviesByPublisher( this.publisher.Text.Trim());
+					}
 					
+				} else if( incGenre ){
+					moviesInDb = DAL.getMoviesByGenre( this.genre.Text );
 				} 
 				
 				foreach( Movie m in moviesInDb){
 					results.Items.Add( m.ToString() );
 				}
+			
             };
 			
 			// infoButton
@@ -277,7 +302,6 @@ namespace rit_dbconcepts
             Lookup.Controls.Add (this.windowHeader);
             Lookup.Controls.Add (this.movieTitle);
             Lookup.Controls.Add (this.storeLoc);
-            Lookup.Controls.Add (this.castCrewMember);
             Lookup.Controls.Add (this.genre);
             Lookup.Controls.Add (this.publisher);
             
