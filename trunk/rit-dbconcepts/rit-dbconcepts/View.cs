@@ -175,7 +175,6 @@ namespace rit_dbconcepts
         				}
 					}
 				} else if (incTitle) {
-        			System.Console.Out.WriteLine ("Search Title");
         			
         			if (incStoreLoc) {
 						List<Movie> found = new List<Movie> ();
@@ -233,10 +232,8 @@ namespace rit_dbconcepts
 						
 						
 					} else if( this.DAL.getStoreByCity (this.storeLoc.Text.Trim ()).Count == 1){
-						System.Console.Out.WriteLine ("Found a single store.");
 						current = this.DAL.getStoreByCity (this.storeLoc.Text.Trim ())[ 0 ];
 					} else {
-						System.Console.Out.WriteLine ("Found no stores in: " + this.storeLoc.Text.Trim () );
 						return;
 					}
         			if (incTitle) {
