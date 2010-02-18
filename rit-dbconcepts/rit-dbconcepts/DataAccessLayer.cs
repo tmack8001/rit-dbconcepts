@@ -41,15 +41,11 @@ namespace rit_dbconcepts
             
             while (Reader.Read())
             {
-                
-                int id = Reader.GetInt16(0);
-                String title = Reader.GetString(1);
-                String genre = Reader.GetString(2);
-                String[] genres = genre.Split(',');
-                //retList.Add(new Movie(id, title, genres));
+                retList.Add(TypeFactory.readMovie(Reader));
             }
-            //some function in TypeFactor(Reader);
+
             connection.Close();
+
             return retList;
         }
 
@@ -70,11 +66,7 @@ namespace rit_dbconcepts
 
             while (Reader.Read())
             {
-                int id = Reader.GetInt16(0);
-                String title = Reader.GetString(1);
-                String genre = Reader.GetString(2);
-                String[] genres = genre.Split(',');
-                //retList.Add(new Movie(id, title, genres));
+                retList.Add(TypeFactory.readMovie(Reader));
             }
             //some function in TypeFactor(Reader);
             connection.Close();
@@ -98,11 +90,7 @@ namespace rit_dbconcepts
             
             while (Reader.Read())
             {
-                int id = Reader.GetInt16(0);
-                String title = Reader.GetString(1);
-                String genre = Reader.GetString(2);
-                String[] genres = genre.Split(',');
-                //retList.Add(new Movie( id, title, genres));
+                retList.Add(TypeFactory.readMovie(Reader));
             }
             //some function in TypeFactor(Reader);
             connection.Close();
@@ -602,7 +590,5 @@ namespace rit_dbconcepts
             connection.Close();
             return dvd_id;
         }
-
-       public int 
     }
 }
