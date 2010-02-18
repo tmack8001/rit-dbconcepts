@@ -86,7 +86,7 @@ namespace rit_dbconcepts
             String queryStr = "SELECT m.movie_id, m.title, m.genre, pm.distribution_date" +
                 " FROM movie AS m" +
                 " LEFT OUTER JOIN publisher_movie as pm ON pm.movie_id = m.movie_id" +
-                " WHERE m.title = " + temp_title;
+                " WHERE m.title = '" + temp_title + "'";
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
@@ -639,6 +639,30 @@ namespace rit_dbconcepts
             return dvd_id;
         }
 
+        public int insertTransaction(DVD dvd, Customer customer)
+        {
+            String queryStr = "INSERT INTO dvd" +
+                " ( format ) VALUES ( " + dvd.Format + "' )";
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            command.ExecuteNonQuery();
+            int trans_id = (int)command.LastInsertedId;
+
+            queryStr = "INSERT INTO dvd_movie" +
+                " ( movie_id, dvd_id, release_date ) " +
+                " VALUES ( " + dvd.Movie.Id + ", " + trans_id + ", " + dvd.ReleaseDate + " )";
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+            command.ExecuteNonQuery();
+
+            connection.Close();
+            return trans_id;
+        }
+
         public void insertInventory(StockItem inventory, Store store)
         {
             String queryStr = "INSERT INTO inventory" +
@@ -661,10 +685,11 @@ namespace rit_dbconcepts
             SET column1=value, column2=value2,...
             WHERE some_column=some_value*/
 
-            String queryStr = "UPDA inventory" +
-                " ( store_id, in_stock, price_per_day, dvd_id ) " +
-                " VALUES ( " + store.StoreId + ", " + inventory.IsInStock + ", " +
-                inventory.PricePerDay + ", " + inventory.Item.Id + " )";
+            String queryStr = "UPDATE inventory" +
+                " SET store_id = "  + store.StoreId + ", in_stock = " + inventory.IsInStock + ", " +
+                " price_per_day = " + inventory.PricePerDay +
+                " dvd_id = " + inventory.Item.Id +
+                " WHERE dvd_id = " + inventory.Item.Id;
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
