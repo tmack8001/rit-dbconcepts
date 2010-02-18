@@ -952,9 +952,9 @@ namespace rit_dbconcepts
             }
             else
             {
-                String queryStr = "INSERT INTO movies" +
+                String queryStr = "INSERT INTO movie" +
                     " ( title, genre ) VALUES ( '" + movie.Title + "'," +
-                    " '" + String.Join(",", movie.Genres.ToArray<String>()) + "'";
+                    " '" + String.Join(",", movie.Genres.ToArray<String>()) + "' )";
 
                 command = connection.CreateCommand();
                 command.CommandText = queryStr;
@@ -964,6 +964,10 @@ namespace rit_dbconcepts
                 retVal = (int)command.LastInsertedId;
 
                 connection.Close();
+
+                int dvd_id = insertDvd(new DVD(retVal, "DVD", System.DateTime.Now));
+                Store store = getStoreById(1);
+                insertInventory(new StockItem(true,1.0f,getDvdById(dvd_id)), store);
             }
             return retVal;
         }
