@@ -484,6 +484,30 @@ namespace rit_dbconcepts
             return retList;
         }
 
+        public Store getStoreByDvdId(int id)
+        {
+            Store retVal;
+            
+            String queryStr = "SELECT s.store_id, s.street, s.city, s.state," +
+                " s.zipcode, s.date_opened" +
+                " FROM store as s" +
+                " RIGHT OUTER JOIN inventory as i ON i.store_id = s.store_id" +
+                " WHERE i.dvd_id = " + id + " LIMIT 1";
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            Reader = command.ExecuteReader();
+            retVal = TypeFactory.readStore(Reader);
+            
+            //some function in TypeFactor(Reader);
+            connection.Close();
+            retVal.Inventory = new LinkedList<StockItem>(getInventoryById(retVal.StoreId));
+
+            return retVal;
+        }
+
         /** Get Inventories */
 
         public List<StockItem> getInventory()
@@ -714,6 +738,26 @@ namespace rit_dbconcepts
 
             String queryStr = "SELECT p.name, p.street, p.city, p.state, p.zipcode, p.phone" +
                 " FROM publisher as p WHERE p.name like '%" + name + "%'";
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            Reader = command.ExecuteReader();
+
+            //some function in TypeFactor(Reader);
+            connection.Close();
+            return retVal;
+        }
+
+        public Publisher getPublishersByMovieId(int id)
+        {
+            Publisher retVal = null;
+
+            String queryStr = "SELECT p.name, p.street, p.city, p.state, p.zipcode, p.phone" +
+                " FROM publisher as p" +
+                " RIGHT OUTER JOIN publisher_movie as pm ON pm.publisher_name = p.name" +
+                " WHERE pm.movie_id = " + id;
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
