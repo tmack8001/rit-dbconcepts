@@ -80,7 +80,7 @@ namespace rit_dbconcepts
             String queryStr = "SELECT m.movie_id, m.title, m.genre, pm.distribution_date" +
                 " FROM movie AS m" +
                 " LEFT OUTER JOIN publisher_movie as pm ON pm.movie_id = m.movie_id" +
-                " WHERE m.title = " + temp_title + " LIMIT 1";
+                " WHERE m.title = " + temp_title;
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
@@ -97,6 +97,29 @@ namespace rit_dbconcepts
             return retList;
         }
 
+        public Movie getMovieById(int id)
+        {
+            Movie retVal = null;
+
+            String queryStr = "SELECT m.movie_id, m.title, m.genre, pm.distribution_date" +
+                " FROM movie AS m" +
+                " LEFT OUTER JOIN publisher_movie as pm ON pm.movie_id = m.movie_id" +
+                " WHERE m.movie_id = " + id + " LIMIT 1";
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            Reader = command.ExecuteReader();
+
+            while (Reader.Read())
+            {
+                retVal = TypeFactory.readMovie(Reader);
+            }
+            //some function in TypeFactor(Reader);
+            connection.Close();
+            return retVal;
+        }
 
         /** Get Customers */
 
@@ -508,6 +531,15 @@ namespace rit_dbconcepts
 
         public void insertEmployee(Employee employee, Store store)
         {
+            String queryStr = "INSERT INTO employee_store" +
+                " ( store_id, employee_id )" +
+                " VALUES ( '" + store.StoreId + "', " + employee.Id + " )";
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            command.ExecuteNonQuery();
         }
 
         public int insertEmployee(Employee employee)
@@ -528,6 +560,16 @@ namespace rit_dbconcepts
 
         public void insertPublisher(Publisher publisher, Movie movie)
         {
+            String queryStr = "INSERT INTO publisher_movie" +
+                " ( publisher_name, movie_id, distribution_date )" +
+                " VALUES ( '" + publisher.Name + "', " + movie.Id + "," +
+                " " + movie.DistroDate + " )";
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            command.ExecuteNonQuery();
         }
 
         public String insertPublisher(Publisher publisher)
@@ -590,5 +632,43 @@ namespace rit_dbconcepts
             connection.Close();
             return dvd_id;
         }
+
+        public void insertInventory(StockItem inventory, Store store)
+        {
+            String queryStr = "INSERT INTO inventory" +
+                " ( store_id, in_stock, price_per_day, dvd_id ) " +
+                " VALUES ( " + store.StoreId + ", " + inventory.IsInStock + ", " + 
+                inventory.PricePerDay + ", " + inventory.Item.Id + " )";
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            connection.Close();
+        }
+
+        public void updateInventory(StockItem inventory, Store store)
+        {
+            /* UPDATE table_name
+            SET column1=value, column2=value2,...
+            WHERE some_column=some_value*/
+
+            String queryStr = "UPDA inventory" +
+                " ( store_id, in_stock, price_per_day, dvd_id ) " +
+                " VALUES ( " + store.StoreId + ", " + inventory.IsInStock + ", " +
+                inventory.PricePerDay + ", " + inventory.Item.Id + " )";
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            connection.Close();
+        }
+
+
     }
 }
