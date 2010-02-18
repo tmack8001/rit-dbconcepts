@@ -86,7 +86,7 @@ namespace rit_dbconcepts
             String queryStr = "SELECT m.movie_id, m.title, m.genre, pm.distribution_date" +
                 " FROM movie AS m" +
                 " LEFT OUTER JOIN publisher_movie as pm ON pm.movie_id = m.movie_id" +
-                " WHERE m.title = '" + temp_title + "'";
+                " WHERE m.title like '%" + temp_title + "%'";
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
@@ -151,13 +151,13 @@ namespace rit_dbconcepts
 
         public List<Customer> getCustomerById(int id)
         {
-            List<Customer> retList = new List<Customer>();
+            Customer retVal = null;
 
             String queryStr = "SELECT p.person_id, p.first_name, p.last_name, c.street, c.city," +
                 " c.state, c.zipcode, c.card_number, c.exp_date" +
                 " FROM person as p" +
                 " OUTER JOIN customer as c ON c.person_id = p.person_id" +
-                " WHERE p.person_id = " + id;
+                " WHERE p.person_id = " + id + " LIMIT 1";
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
@@ -167,7 +167,7 @@ namespace rit_dbconcepts
 
             //some function in TypeFactor(Reader);
             connection.Close();
-            return retList;
+            return retVal;
         }
 
         public List<Customer> getCustomersByFullName(String first, String last)
@@ -178,7 +178,7 @@ namespace rit_dbconcepts
                 " c.state, c.zipcode, c.card_number, c.exp_date" +
                 " FROM person as p" +
                 " OUTER JOIN customer as c ON c.person_id = p.person_id" +
-                " WHERE p.first_name = '" + first + "' AND p.last_name = '" + last + "'";
+                " WHERE p.first_name like '%" + first + "%' OR p.last_name like '%" + last + "%'";
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
@@ -219,7 +219,7 @@ namespace rit_dbconcepts
             String queryStr = "SELECT p.person_id, p.first_name, p.last_name, e.position, e.hire_date" +
                 " FROM person as p" +
                 " OUTER JOIN employee as e ON e.person_id = p.person_id" +
-                " WHERE p.first_name = '" + first + "' AND p.last_name = '" + last + "'";
+                " WHERE p.first_name like '%" + first + "%' OR p.last_name like '%" + last + "%'";
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
@@ -234,12 +234,12 @@ namespace rit_dbconcepts
 
         public List<Employee> getEmployeeById(int id)
         {
-            List<Employee> retList = new List<Employee>();
+            Employee retVal = null;
 
             String queryStr = "SELECT p.person_id, p.first_name, p.last_name, e.position, e.hire_date" +
                 " FROM person as p" +
                 " OUTER JOIN employee as e ON e.person_id = p.person_id" +
-                " WHERE p.person_id = " + id;
+                " WHERE p.person_id = " + id + " LIMIT 1";
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
@@ -249,7 +249,7 @@ namespace rit_dbconcepts
 
             //some function in TypeFactor(Reader);
             connection.Close();
-            return retList;
+            return retVal;
         }
 
         public List<Employee> getEmployeesByStoreId(int id)
@@ -411,12 +411,12 @@ namespace rit_dbconcepts
             return retList;
         }
 
-        public List<Publisher> getInventoryById(int id)
+        public Publisher getInventoryById(int id)
         {
-            List<Publisher> retList = new List<Publisher>();
+            Publisher retVal = new Publisher();
 
             String queryStr = "SELECT i.store_id, i.in_stock, i.price_per_day, i.dvd_id" +
-                " FROM inventory as i WHERE i.store_id = " + id;
+                " FROM inventory as i WHERE i.store_id = " + id + " LIMIT 1";
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
@@ -451,7 +451,7 @@ namespace rit_dbconcepts
             return retList;
         }
 
-        public List<CastCrewMember> getCastByMoveId(int id)
+        public List<CastCrewMember> getCastByMovieId(int id)
         {
             List<CastCrewMember> retList = new List<CastCrewMember>();
 
