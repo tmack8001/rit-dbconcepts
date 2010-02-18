@@ -321,7 +321,7 @@ namespace rit_dbconcepts
             String queryStr = "SELECT s.store_id, s.street, s.city, s.state" +
                 " s.zipcode, s.date_opened" +
                 " FROM store as s" +
-                " WHERE s.city = " + city;
+                " WHERE s.city = '" + city + "'";
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
@@ -659,28 +659,21 @@ namespace rit_dbconcepts
             return dvd_id;
         }
 
-        public int insertTransaction(DVD dvd, Customer customer)
+        public int insertTransaction(Transaction transaction)
         {
-            String queryStr = "INSERT INTO dvd" +
-                " ( format ) VALUES ( " + dvd.Format + "' )";
+            String queryStr = "INSERT INTO transaction" +
+                " ( trans_id, dvd_id, cuatomer_id, trans_date  )" +
+                " VALUES ( " + transaction.Id + ", " + transaction.DVD.Id + "," + 
+                " " + transaction.Customer.Id + "' )";
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
 
             connection.Open();
             command.ExecuteNonQuery();
-            int trans_id = (int)command.LastInsertedId;
-
-            queryStr = "INSERT INTO dvd_movie" +
-                " ( movie_id, dvd_id, release_date ) " +
-                " VALUES ( " + dvd.Movie.Id + ", " + trans_id + ", " + dvd.ReleaseDate + " )";
-
-            command = connection.CreateCommand();
-            command.CommandText = queryStr;
-            command.ExecuteNonQuery();
-
+            
             connection.Close();
-            return trans_id;
+            return (int)command.LastInsertedId;
         }
 
         public void insertInventory(StockItem inventory, Store store)
