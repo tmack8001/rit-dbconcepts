@@ -302,6 +302,9 @@ namespace rit_dbconcepts
 			this.addNewMovie.Location = new Point (475, 550);
 			this.addNewMovie.Name = "AddNewMovie";
 			this.addNewMovie.Text = "Add New";
+			this.addNewMovie.Click += delegate(object sender, EventArgs e) {
+				infoPanel( "Movie", null);
+			};
 			
 			
             Lookup.Controls.Add (this.windowHeader);
@@ -438,6 +441,9 @@ namespace rit_dbconcepts
         	this.addNewCust.Location = new Point( 475, 550);
 			this.addNewCust.Name = "AddNewCust";
 			this.addNewCust.Text = "Add New Customer";
+			this.addNewCust.Click += delegate(object sender, EventArgs e) {
+				infoPanel( "Customer", null);
+			};
 			
         	CusInfo.Controls.Add (this.customerHeader);
 			CusInfo.Controls.Add (this.selectedMovie);
