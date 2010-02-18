@@ -11,6 +11,11 @@ namespace rit_dbconcepts.Types
         float mPricePerDay;
         DVD mItem;
 
+        public StockItem(bool inStock, float pricePerDay)
+        :   this(inStock, pricePerDay, null)
+        {
+        }
+
         public StockItem(bool inStock, float pricePerDay, DVD item)
         {
             mInStock = inStock;

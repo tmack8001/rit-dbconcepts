@@ -392,9 +392,10 @@ namespace rit_dbconcepts
 
         /** Get Inventories */
 
-        public List<Publisher> getInventory()
+        public List<StockItem> getInventory()
         {
-            List<Publisher> retList = new List<Publisher>();
+            List<StockItem> retList = new List<StockItem>();
+            List<int> dvdIds = new List<int>();
 
             String queryStr = "SELECT i.store_id, i.in_stock, i.price_per_day, i.dvd_id" +
                 " FROM inventory as i";
@@ -405,14 +406,26 @@ namespace rit_dbconcepts
             connection.Open();
             Reader = command.ExecuteReader();
 
+            while (Reader.Read())
+            {
+                retList.Add(TypeFactory.readStockItem(Reader));
+                dvdIds.Add(Reader.GetInt16(Reader.GetOrdinal("dvd_id")));
+            }
+
+            for (int i = 0; i < retList.Count; ++i)
+            {
+                retList[i].Item = getDvdById(dvdIds[i]);
+            }
+
             //some function in TypeFactor(Reader);
             connection.Close();
             return retList;
         }
 
-        public Publisher getInventoryById(int id)
+        public List<StockItem> getInventoryById(int id)
         {
-            Publisher retVal = null;
+            List<StockItem> retList = new List<StockItem>();
+            List<int> dvdIds = new List<int>();
 
             String queryStr = "SELECT i.store_id, i.in_stock, i.price_per_day, i.dvd_id" +
                 " FROM inventory as i WHERE i.store_id = " + id + " LIMIT 1";
@@ -423,9 +436,19 @@ namespace rit_dbconcepts
             connection.Open();
             Reader = command.ExecuteReader();
 
-            //some function in TypeFactor(Reader);
+            while (Reader.Read())
+            {
+                retList.Add(TypeFactory.readStockItem(Reader));
+                dvdIds.Add(Reader.GetInt16(Reader.GetOrdinal("dvd_id")));
+            }
+
+            for (int i = 0; i < retList.Count; ++i)
+            {
+                retList[i].Item = getDvdById(dvdIds[i]);
+            }
+
             connection.Close();
-            return retVal;
+            return retList;
         }
 
         /** Cast and Crew */
@@ -503,7 +526,7 @@ namespace rit_dbconcepts
             return retList;
         }
 
-        public DVD getDvdsById(int id)
+        public DVD getDvdById(int id)
         {
             DVD retVal;
 
