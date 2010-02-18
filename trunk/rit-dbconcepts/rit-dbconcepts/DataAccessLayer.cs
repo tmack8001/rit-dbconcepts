@@ -31,7 +31,7 @@ namespace rit_dbconcepts
 
             String queryStr = "SELECT m.movie_id, m.title, m.genre, pm.distribution_date" +
                 " FROM movie AS m" + 
-                " LEFT OUTER JOIN publisher_movie as pm ON pm.movie_id = m.movie_id";
+                " RIGHT OUTER JOIN publisher_movie as pm ON pm.movie_id = m.movie_id";
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
@@ -59,7 +59,7 @@ namespace rit_dbconcepts
 
             String queryStr = "SELECT m.movie_id, m.title, m.genre, pm.distribution_date" +
                 " FROM movie AS m" +
-                " LEFT OUTER JOIN publisher_movie as pm ON pm.movie_id = m.movie_id" +
+                " RIGHT OUTER JOIN publisher_movie as pm ON pm.movie_id = m.movie_id" +
                 " WHERE m.genre like '%" + temp_genre + "%'";
 
             command = connection.CreateCommand();
@@ -88,8 +88,8 @@ namespace rit_dbconcepts
 
             String queryStr = "SELECT m.movie_id, m.title, m.genre, pm.distribution_date" +
                 " FROM movie AS m" +
-                " LEFT OUTER JOIN publisher_movie as pm ON pm.movie_id = m.movie_id" +
-                " LEFT OUTER JOIN publisher as p ON p.name = pm.publisher_name" +
+                " RIGHT OUTER JOIN publisher_movie as pm ON pm.movie_id = m.movie_id" +
+                " RIGHT OUTER JOIN publisher as p ON p.name = pm.publisher_name" +
                 " WHERE p.name like '%" + publisherName + "%'";
 
             command = connection.CreateCommand();
@@ -113,7 +113,7 @@ namespace rit_dbconcepts
 
             String queryStr = "SELECT m.movie_id, m.title, m.genre, pm.distribution_date" +
                 " FROM movie AS m" +
-                " LEFT OUTER JOIN publisher_movie as pm ON pm.movie_id = m.movie_id" +
+                " RIGHT OUTER JOIN publisher_movie as pm ON pm.movie_id = m.movie_id" +
                 " WHERE m.title like '%" + temp_title + "%'";
 
             command = connection.CreateCommand();
@@ -143,7 +143,7 @@ namespace rit_dbconcepts
 
             String queryStr = "SELECT m.movie_id, m.title, m.genre, pm.distribution_date" +
                 " FROM movie AS m" +
-                " LEFT OUTER JOIN publisher_movie as pm ON pm.movie_id = m.movie_id" +
+                " RIGHT OUTER JOIN publisher_movie as pm ON pm.movie_id = m.movie_id" +
                 " WHERE m.movie_id = " + id + " LIMIT 1";
 
             command = connection.CreateCommand();
@@ -172,7 +172,7 @@ namespace rit_dbconcepts
             String queryStr = "SELECT p.person_id, p.first_name, p.last_name, c.street, c.city," +
                 " c.state, c.zipcode, c.card_number, c.exp_date" +
                 " FROM person as p" +
-                " OUTER JOIN customer as c ON c.person_id = p.person_id";
+                " RIGHT OUTER JOIN customer as c ON c.person_id = p.person_id";
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
@@ -196,7 +196,7 @@ namespace rit_dbconcepts
             String queryStr = "SELECT p.person_id, p.first_name, p.last_name, c.street, c.city," +
                 " c.state, c.zipcode, c.card_number, c.exp_date" +
                 " FROM person as p" +
-                " OUTER JOIN customer as c ON c.person_id = p.person_id" +
+                " RIGHT OUTER JOIN customer as c ON c.person_id = p.person_id" +
                 " WHERE p.person_id = " + id + " LIMIT 1";
 
             command = connection.CreateCommand();
@@ -219,7 +219,7 @@ namespace rit_dbconcepts
             String queryStr = "SELECT p.person_id, p.first_name, p.last_name, c.street, c.city," +
                 " c.state, c.zipcode, c.card_number, c.exp_date" +
                 " FROM person as p" +
-                " OUTER JOIN customer as c ON c.person_id = p.person_id" +
+                " RIGHT OUTER JOIN customer as c ON c.person_id = p.person_id" +
                 " WHERE p.first_name like '%" + first + "%' OR p.last_name like '%" + last + "%'";
 
             command = connection.CreateCommand();
@@ -246,7 +246,7 @@ namespace rit_dbconcepts
 
             String queryStr = "SELECT p.person_id, p.first_name, p.last_name, e.position, e.hire_date" +
                 " FROM person as p" +
-                " OUTER JOIN employee as e ON e.person_id = p.person_id";
+                " RIGHT OUTER JOIN employee as e ON e.person_id = p.person_id";
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
@@ -270,7 +270,7 @@ namespace rit_dbconcepts
 
             String queryStr = "SELECT p.person_id, p.first_name, p.last_name, e.position, e.hire_date" +
                 " FROM person as p" +
-                " OUTER JOIN employee as e ON e.person_id = p.person_id" +
+                " RIGHT OUTER JOIN employee as e ON e.person_id = p.person_id" +
                 " WHERE p.first_name like '%" + first + "%' OR p.last_name like '%" + last + "%'";
 
             command = connection.CreateCommand();
@@ -295,7 +295,7 @@ namespace rit_dbconcepts
 
             String queryStr = "SELECT p.person_id, p.first_name, p.last_name, e.position, e.hire_date" +
                 " FROM person as p" +
-                " OUTER JOIN employee as e ON e.person_id = p.person_id" +
+                " RIGHT OUTER JOIN employee as e ON e.person_id = p.person_id" +
                 " WHERE p.person_id = " + id + " LIMIT 1";
 
             command = connection.CreateCommand();
@@ -317,8 +317,8 @@ namespace rit_dbconcepts
 
             String queryStr = "SELECT p.person_id, p.first_name, p.last_name, e.position, e.hire_date" +
                 " FROM person as p" +
-                " OUTER JOIN employee as e ON e.person_id = p.person_id" +
-                " OUTER JOIN employee_store as es ON es.employee_id = e.person_id" +
+                " RIGHT OUTER JOIN employee as e ON e.person_id = p.person_id" +
+                " RIGHT OUTER JOIN employee_store as es ON es.employee_id = e.person_id" +
                 " WHERE es.store_id = " + id;
 
             command = connection.CreateCommand();
@@ -713,7 +713,7 @@ namespace rit_dbconcepts
             Publisher retVal = null;
 
             String queryStr = "SELECT p.name, p.street, p.city, p.state, p.zipcode, p.phone" +
-                " FROM publisher as p WHERE p.name = '" + name + "'";
+                " FROM publisher as p WHERE p.name like '%" + name + "%'";
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
@@ -743,9 +743,26 @@ namespace rit_dbconcepts
             return retVal;
         }
 
-        private object updateMovie(Movie movie, Publisher publisher)
+        private void updateMovie(Movie movie, Publisher publisher)
         {
-            throw new NotImplementedException();
+            updateMovie(movie);
+            /*UPDATE table_name
+            SET column1=value, column2=value2,...
+            WHERE some_column=some_value*/
+
+            String queryStr = "UPDATE publisher_movie" +
+                " SET publisher_name = " + publisher.Name + ", movie_id = " + inventory.IsInStock + ", " +
+                " price_per_day = " + inventory.PricePerDay +
+                " dvd_id = " + inventory.Item.Id +
+                " WHERE dvd_id = " + inventory.Item.Id;
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            connection.Close();
         }
 
         public int insertMovie(Movie movie)
