@@ -390,7 +390,7 @@ namespace rit_dbconcepts
             String queryStr = "SELECT s.store_id, s.street, s.city, s.state," +
                 " s.zipcode, s.date_opened" +
                 " FROM store as s" +
-                " WHERE s.city = '%" + city + "%'";
+                " WHERE s.city like '%" + city + "%'";
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
