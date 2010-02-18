@@ -130,5 +130,15 @@ namespace rit_dbconcepts.Types
                 addressData,
                 storeReader.GetDateTime(dateOpenedOrdinal));
         }
+
+        public static StockItem readStockItem(DbDataReader stockReader)
+        {
+            int inStockOrdinal = stockReader.GetOrdinal("in_stock");
+            int ppdOrdinal = stockReader.GetOrdinal("price_per_day");
+
+            return new StockItem(
+                stockReader.GetBoolean(inStockOrdinal),
+                stockReader.GetFloat(ppdOrdinal));
+        }
     }
 }
