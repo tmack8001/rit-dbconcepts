@@ -374,6 +374,44 @@ namespace rit_dbconcepts
             return retList;
         }
 
+        /** Get Inventories */
+
+        public List<Publisher> getInventory()
+        {
+            List<Publisher> retList = new List<Publisher>();
+
+            String queryStr = "SELECT i.store_id, i.in_stock, i.price_per_day, i.dvd_id" +
+                " FROM inventory as i";
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            Reader = command.ExecuteReader();
+
+            //some function in TypeFactor(Reader);
+            connection.Close();
+            return retList;
+        }
+
+        public List<Publisher> getInventoryById(int id)
+        {
+            List<Publisher> retList = new List<Publisher>();
+
+            String queryStr = "SELECT i.store_id, i.in_stock, i.price_per_day, i.dvd_id" +
+                " FROM inventory as i WHERE i.store_id = " + id;
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            Reader = command.ExecuteReader();
+
+            //some function in TypeFactor(Reader);
+            connection.Close();
+            return retList;
+        }
+
         /** Cast and Crew */
 
         public List<CastCrewMember> getCastById(int id)
