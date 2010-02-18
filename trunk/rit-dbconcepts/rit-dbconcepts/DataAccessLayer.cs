@@ -45,6 +45,11 @@ namespace rit_dbconcepts
             }
 
             connection.Close();
+            foreach (Movie movie in retList)
+            {
+                movie.CastCrew = new LinkedList<CastCrewMember>(getCastByMovieId(movie.Id));
+            }
+
             return retList;
         }
 
@@ -67,8 +72,13 @@ namespace rit_dbconcepts
             {
                 retList.Add(TypeFactory.readMovie(Reader));
             }
-            //some function in TypeFactor(Reader);
+
             connection.Close();
+
+            foreach (Movie movie in retList)
+            {
+                movie.CastCrew = new LinkedList<CastCrewMember>(getCastByMovieId(movie.Id));
+            }
             return retList;
         }
 
@@ -91,8 +101,14 @@ namespace rit_dbconcepts
             {
                 retList.Add(TypeFactory.readMovie(Reader));
             }
-            //some function in TypeFactor(Reader);
+            
             connection.Close();
+
+            foreach (Movie movie in retList)
+            {
+                movie.CastCrew = new LinkedList<CastCrewMember>(getCastByMovieId(movie.Id));
+            }
+
             return retList;
         }
 
@@ -116,6 +132,7 @@ namespace rit_dbconcepts
 
             //some function in TypeFactor(Reader);
             connection.Close();
+
             return retVal;
         }
 
@@ -136,7 +153,11 @@ namespace rit_dbconcepts
             connection.Open();
             Reader = command.ExecuteReader();
 
-            //some function in TypeFactor(Reader);
+            while (Reader.Read())
+            {
+                retList.Add(TypeFactory.readCustomer(Reader));
+            }
+
             connection.Close();
             return retList;
         }
@@ -156,6 +177,8 @@ namespace rit_dbconcepts
 
             connection.Open();
             Reader = command.ExecuteReader();
+
+            retVal = TypeFactory.readCustomer(Reader);
 
             //some function in TypeFactor(Reader);
             connection.Close();
@@ -178,6 +201,11 @@ namespace rit_dbconcepts
             connection.Open();
             Reader = command.ExecuteReader();
 
+            while (Reader.Read())
+            {
+                retList.Add(TypeFactory.readCustomer(Reader));
+            }
+
             //some function in TypeFactor(Reader);
             connection.Close();
             return retList;
@@ -199,6 +227,11 @@ namespace rit_dbconcepts
             connection.Open();
             Reader = command.ExecuteReader();
 
+            while (Reader.Read())
+            {
+                retList.Add(TypeFactory.readEmployee(Reader));
+            }
+
             //some function in TypeFactor(Reader);
             connection.Close();
             return retList;
@@ -218,6 +251,11 @@ namespace rit_dbconcepts
 
             connection.Open();
             Reader = command.ExecuteReader();
+
+            while (Reader.Read())
+            {
+                retList.Add(TypeFactory.readEmployee(Reader));
+            }
 
             //some function in TypeFactor(Reader);
             connection.Close();
@@ -239,6 +277,8 @@ namespace rit_dbconcepts
             connection.Open();
             Reader = command.ExecuteReader();
 
+            retVal = TypeFactory.readEmployee(Reader);
+
             //some function in TypeFactor(Reader);
             connection.Close();
             return retVal;
@@ -259,6 +299,11 @@ namespace rit_dbconcepts
 
             connection.Open();
             Reader = command.ExecuteReader();
+
+            while (Reader.Read())
+            {
+                retList.Add(TypeFactory.readEmployee(Reader));
+            }
 
             //some function in TypeFactor(Reader);
             connection.Close();
@@ -478,7 +523,7 @@ namespace rit_dbconcepts
 
         public CastCrewMember getCastById(int id)
         {
-            CastCrewMember retVal = null;
+            CastCrewMember retVal;
 
             String queryStr = "SELECT p.person_id, p.first_name, p.last_name, cac.movie_id, cac.job" +
                 " FROM person as p" +
@@ -491,8 +536,12 @@ namespace rit_dbconcepts
             connection.Open();
             Reader = command.ExecuteReader();
 
+            Reader.Read();
+            retVal = TypeFactory.readCastCrewMember(Reader);
+
             //some function in TypeFactor(Reader);
             connection.Close();
+
             return retVal;
         }
 
@@ -510,6 +559,11 @@ namespace rit_dbconcepts
 
             connection.Open();
             Reader = command.ExecuteReader();
+
+            while (Reader.Read())
+            {
+                retList.Add(TypeFactory.readCastCrewMember(Reader));
+            }
 
             //some function in TypeFactor(Reader);
             connection.Close();
