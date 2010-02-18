@@ -51,7 +51,7 @@ namespace rit_dbconcepts.Types
             return new Address(
                 addressReader.GetString(streetOrdinal),
                 addressReader.GetString(cityOrdinal),
-                addressReader.GetString(streetOrdinal),
+                addressReader.GetString(stateOrdinal),
                 addressReader.GetString(zipOrdinal));
         }
 
