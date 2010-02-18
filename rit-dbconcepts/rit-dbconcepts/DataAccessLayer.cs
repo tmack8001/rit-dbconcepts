@@ -149,7 +149,7 @@ namespace rit_dbconcepts
             return retList;
         }
 
-        public List<Customer> getCustomerById(int id)
+        public Customer getCustomerById(int id)
         {
             Customer retVal = null;
 
@@ -232,7 +232,7 @@ namespace rit_dbconcepts
             return retList;
         }
 
-        public List<Employee> getEmployeeById(int id)
+        public Employee getEmployeeById(int id)
         {
             Employee retVal = null;
 
@@ -413,7 +413,7 @@ namespace rit_dbconcepts
 
         public Publisher getInventoryById(int id)
         {
-            Publisher retVal = new Publisher();
+            Publisher retVal = null;
 
             String queryStr = "SELECT i.store_id, i.in_stock, i.price_per_day, i.dvd_id" +
                 " FROM inventory as i WHERE i.store_id = " + id + " LIMIT 1";
@@ -426,7 +426,7 @@ namespace rit_dbconcepts
 
             //some function in TypeFactor(Reader);
             connection.Close();
-            return retList;
+            return retVal;
         }
 
         /** Cast and Crew */
