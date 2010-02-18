@@ -313,7 +313,7 @@ namespace rit_dbconcepts
 			this.transaction.Text = "Transaction";
 			this.transaction.Enabled = false;
 			this.transaction.Click += delegate(object sender, EventArgs e) {
-				this.selectedMovie.Text = "Selected Movie: " + (String)this.results.SelectedItem;
+				this.selectedMovie.Text = "Selected Movie: " + (Movie)this.results.SelectedItem;
 				this.selectedMovie.Visible = true;
 				tabs.SelectedTab = this.custLookup;
 			};
@@ -382,7 +382,7 @@ namespace rit_dbconcepts
                     this.empInfoButton.Enabled = false;
                 }
             };
-            empResults.Items.Add("Add a new customer");
+            this.empResults.Items.Add("Add a new employee");
 
             // CustSubmit
             this.empSubmit.Location = new Point(250, 550);
@@ -392,22 +392,52 @@ namespace rit_dbconcepts
 
             this.empSubmit.Click += delegate(object sender, EventArgs e)
             {
-                String[] names = { "", "" };
-                if (this.employee.Text.Trim().IndexOf(" ") > 0)
+                this.empResults.Items.Clear();
+                List<Employee> empInDb = new List<Employee>();
+
+                bool incName = !this.employee.Text.Trim().Equals("Enter employee name");
+                bool incPosition = !this.position.Text.Trim().Equals("Enter a position to search");
+                
+                if (this.employee.Text.Trim().Equals(""))
                 {
-                    names = this.employee.Text.Trim().Split();
+                    incName = false;
                 }
-                else
+                if (this.position.Text.Trim().Equals(""))
                 {
-                    names[1] = this.employee.Text.Trim();
+                    incPosition = false;
+                }
+                
+                if (incName)
+                {
+                    String[] names = { "", "" };
+                    if (this.employee.Text.Trim().IndexOf(" ") > 0)
+                    {
+                        names = this.employee.Text.Trim().Split();
+                    }
+                    else
+                    {
+                        names[1] = this.employee.Text.Trim();
+                    }
+
+                    List<Employee> employee = DAL.getEmployeesByFullName(names[0], names[1]);
+
+                    if(incPosition) {
+                        foreach (Employee emp in employee)
+                        {
+                            if(emp.Position.Contains(this.position.Text.Trim())) {
+                                empInDb.Add(emp);
+                            }
+                        }
+                    }
+                }else if(incPosition) {
+                    empInDb = DAL.getEmployeesByPosition(this.position.Text.Trim());
+                }else {
+                    empInDb = DAL.getEmployees();
                 }
 
-                this.empResults.Items.Clear();
-                foreach (Employee emp in DAL.getEmployeesByFullName(names[0], names[1]))
-                {
+                foreach( Employee emp in empInDb) {
                     this.empResults.Items.Add(emp);
                 }
-
             };
 
             // CustInfoButton
@@ -539,7 +569,27 @@ namespace rit_dbconcepts
 				
 				message.Location = new Point( 65, 5 );
 				message.Size = new Size(  100, 32);
-				
+
+                DVD dvd;
+                Store store;
+                Transaction transaction;
+                Customer customer = (Customer)custResults.SelectedItem;
+                int movie_id = ((Movie)this.results.SelectedItem).Id;
+                int dvd_id = DAL.getDvdIdByCustomerMovie(customer.Id, movie_id);
+                int trans_id = DAL.getTransactionIdByCustomerMovie(customer.Id, movie_id);
+                if (dvd_id < 0)
+                {
+                    dvd = DAL.getAvailableDvdByMovieId(((Movie)this.results.SelectedItem).Id);
+                }
+                else
+                {
+                    dvd = DAL.getDvdById(dvd_id);
+                }
+                store = DAL.getStoreByDvdId(dvd.Id);
+                transaction = new Transaction(trans_id, new DateTime(), customer, dvd);
+
+                DAL.insertTransaction(transaction);
+
 				accept.Text = "Ok";
 				accept.Location = new Point( 55, 45 );
 				accept.Click += delegate {
@@ -547,7 +597,10 @@ namespace rit_dbconcepts
 				};
 				
 				dialog.Size = new Size (180, 100);
-				dialog.Text = "Success!";
+				if( transaction.Id > 0 )
+                    dialog.Text = "Successfull Check-in of:";
+                else
+                    dialog.Text = "Successfull Check-out of:";
 				dialog.Controls.Add (accept);
 				dialog.Controls.Add (message);
 				dialog.Visible = true;
@@ -691,7 +744,27 @@ namespace rit_dbconcepts
                 T4.Text = selection == null ? "Enter expiration date here" : data.ExpDate.ToString();
 				info.Controls.Add( L4 );
 				info.Controls.Add( T4 );
-			}
+            }
+            else if (title.ToLower().Equals("employee"))
+            {
+
+                Employee data = (Employee)selection;
+
+                L1.Text = "Name (Last/First)";
+                T1.Text = selection == null ? "Enter Name Here" : data.FirstName + " " + data.LastName;
+                info.Controls.Add(L1);
+                info.Controls.Add(T1);
+
+                L2.Text = "Position";
+                T2.Text = selection == null ? "Enter Position Here" : data.Position.ToString();
+                info.Controls.Add(L2);
+                info.Controls.Add(T2);
+
+                L3.Text = "Hire Date";
+                T3.Text = selection == null ? "Enter Hire Date Here" : data.HireDate.ToString();
+                info.Controls.Add(L3);
+                info.Controls.Add(T3);
+            }
 			
 			Button addItem = new Button();
 			addItem.Location = new Point( 420, 450);
@@ -754,9 +827,41 @@ namespace rit_dbconcepts
                         newCust.BillAddress = addr;
                     }
 
-
                     DAL.insertCustomer(newCust);
-				}
+                }
+                else if (title.ToLower().Equals("employee"))
+                {
+                    String[] names = { "", "" };
+                    if (T1.Text.Trim().IndexOf(" ") > 0)
+                    {
+                        names = T1.Text.Trim().Split();
+                    }
+                    else
+                    {
+                        names[1] = T1.Text.Trim();
+                    }
+
+                    String position = T2.Text.Trim();
+                    DateTime hireDate = DateTime.Parse(T3.Text.Trim());
+                    
+                    Employee newEmp;
+
+                    if (selection == null)
+                    {
+                        Person newPerson = new Person(-1, names[0], names[1]);
+                        newEmp = new Employee(newPerson, position, hireDate);
+                    }
+                    else
+                    {
+                        newEmp = (Employee)selection;
+                        newEmp.FirstName = names[0];
+                        newEmp.LastName = names[1];
+                        newEmp.Position = position;
+                        newEmp.HireDate = hireDate;
+                    }
+
+                    DAL.insertEmployee(newEmp);
+                }
 				
 			};
 			this.info.Controls.Add( addItem );
