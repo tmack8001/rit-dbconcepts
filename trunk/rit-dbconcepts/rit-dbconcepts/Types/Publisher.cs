@@ -12,6 +12,13 @@ namespace rit_dbconcepts.Types
         String mPhoneNumber;
         LinkedList<Movie> mPublishedMovies;
 
+        public Publisher(String name, Address address, String phoneNumber)
+        {
+            mName = name;
+            mAddress = address;
+            mPhoneNumber = phoneNumber;
+        }
+
         public Publisher(String name, Address address, String phoneNumber, Movie[] publishedMovies)
         {
             mName = name;
