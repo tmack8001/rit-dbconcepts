@@ -14,7 +14,6 @@ namespace rit_dbconcepts
     public class View : System.Windows.Forms.Form
     {
 
-        private List<CheckBox> cBoxList = new List<CheckBox>();
 		private Form info;
 		private TabPage movieLookup;
 		private TabPage custLookup;
@@ -99,66 +98,41 @@ namespace rit_dbconcepts
 
             // Movie Title Search
         	this.movieTitle.Location = new Point (30, 50);
-        	this.movieTitle.Size = new Size (640, 32);
+        	this.movieTitle.Size = new Size (700, 32);
         	this.movieTitle.Name = "MovieTitle";
         	this.movieTitle.Text = "Enter a movie title";
         	this.movieTitle.TabIndex = 1;
         	
         	// Location
         	this.storeLoc.Location = new Point (30, 100);
-        	this.storeLoc.Size = new Size (640, 32);
+        	this.storeLoc.Size = new Size (700, 32);
         	this.storeLoc.Name = "LocationField";
         	this.storeLoc.Text = "Enter a town/city";
         	this.storeLoc.TabIndex = 2;
         	
         	// Cast/Crew Search
         	this.castCrewMember.Location = new Point (30, 150);
-        	this.castCrewMember.Size = new Size (640, 32);
+        	this.castCrewMember.Size = new Size (700, 32);
         	this.castCrewMember.Name = "CastCrew";
         	this.castCrewMember.Text = "Enter a cast or crew member";
         	this.castCrewMember.TabIndex = 3;
         	
         	// Genre
         	this.genre.Location = new Point (30, 200);
-        	this.genre.Size = new Size (640, 32);
+        	this.genre.Size = new Size (700, 32);
         	this.genre.Name = "Genre";
         	this.genre.Text = "Enter a genre";
         	this.genre.TabIndex = 4;
         	
         	// publisher
         	this.publisher.Location = new Point (30, 250);
-        	this.publisher.Size = new Size (640, 32);
+        	this.publisher.Size = new Size (700, 32);
         	this.publisher.Name = "Publisher";
         	this.publisher.Text = "Enter a publisher";
         	this.publisher.TabIndex = 5;
         	
-        	// CheckBoxes
-        	int xloc = 680;
-        	int yloc = 70;
-        	int i = 0;
-        	while (i < 8) {
-        		CheckBox box = new CheckBox ();
-        		box.Location = new Point (xloc, yloc);
-        		box.Size = new Size (45, 32);
-        		if (i < 4) {
-        			box.Text = "AND";
-        		} else {
-        			box.Text = "OR";
-        		}
-        		
-        		this.cBoxList.Add (box);
-        		
-        		if (i == 3) {
-        			xloc += 50;
-        			yloc = 70;
-        		} else {
-        			yloc += 50;
-        		}
-        		i++;
-        	}
-        	
         	//results ListBox
-        	this.results.Location = new Point (40, 300);
+        	this.results.Location = new Point (30, 300);
         	this.results.Name = "Results";
         	this.results.Size = new Size (700, 250);
         	this.results.SelectedValueChanged += delegate {
@@ -170,6 +144,7 @@ namespace rit_dbconcepts
         			this.transaction.Enabled = false;
         		}
         	};
+        	results.Items.Add ("Add a new movie");
         	
         	// Submit
         	this.submit.Location = new Point (250, 550);
@@ -181,34 +156,39 @@ namespace rit_dbconcepts
         		this.results.Items.Clear ();
         		List<Movie> moviesInDb = new List<Movie> ();
         		
-        		bool incTitle = !this.movieTitle.Text.Trim ().Equals ("Enter a movie title") &&
-					!this.movieTitle.Text.Trim ().Equals ("");
-        		bool incStoreLoc = !this.storeLoc.Text.Trim ().Equals ("Enter a town/city") && 
-					!this.movieTitle.Text.Trim ().Equals ("");
-        		bool incCastCrewMember = !this.castCrewMember.Text.Trim ().Equals ("Enter a cast or crew member") || 
-						!this.movieTitle.Text.Trim ().Equals ("");
-        		bool incGenre = !this.genre.Text.Trim ().Equals ("Enter a genre") && 
-					!this.movieTitle.Text.Trim ().Equals ("");
-        		bool incPublisher = !this.publisher.Text.Trim ().Equals ("Enter a publisher") && 
-					!this.movieTitle.Text.Trim ().Equals ("");
+        		bool incTitle = !this.movieTitle.Text.Trim ().Equals ("Enter a movie title");
+        		bool incStoreLoc = !this.storeLoc.Text.Trim ().Equals ("Enter a town/city");
+        		bool incCastCrewMember = !this.castCrewMember.Text.Trim ().Equals ("Enter a cast or crew member");
+        		bool incGenre = !this.genre.Text.Trim ().Equals ("Enter a genre");
+        		bool incPublisher = !this.publisher.Text.Trim ().Equals ("Enter a publisher");
         		
         		if (incTitle) {
         			System.Console.Out.WriteLine ("Search Title");
-        			moviesInDb = this.DAL.getMovieByTitle (this.movieTitle.Text.Trim ());
+        			
         			if (incStoreLoc) {
-        				foreach (Movie m in moviesInDb) {
-        					foreach (Store s in DAL.getStoreByCity (this.storeLoc.Text.Trim ())) {
-        						foreach (StockItem d in s.Inventory) {
-        							if (!d.Item.Movie.Title.Equals (this.movieTitle.Text.Trim ())) {
-        								moviesInDb.Remove (m);
-        								System.Console.Out.WriteLine ("Removed " + m.ToString ());
+        				List<Movie> found = new List<Movie> ();
+        				List<Store> store = DAL.getStoreByCity (this.storeLoc.Text.Trim ());
+        				Store s = null;
+        				Movie m = null;
+        				for (int j = store.Count - 1; j >= 0; j--) {
+        					s = store[j];
+        					for (int i = moviesInDb.Count - 1; i >= 0; i--) {
+        						List<StockItem> invet = new List<StockItem> (s.Inventory);
+        						StockItem st = null;
+        						m = moviesInDb[i];
+        						for (int k = invet.Count - 1; k >= 0; k--) {
+        							st = invet[k];
+        							if (st.Item.Movie.Title.Equals (m.Title)) {
+        								found.Add (m);
         							}
         						}
         					}
-        					
         				}
-        			}
-        		} else if (incStoreLoc) {
+        				moviesInDb = found;
+        			} else { 
+						moviesInDb = this.DAL.getMovieByTitle (this.movieTitle.Text.Trim ());
+					}
+         		} else if (incStoreLoc) {
         			
         			Store current = null;
         			if (this.DAL.getStoreByCity (this.storeLoc.Text.Trim ()).Count > 1) {
@@ -253,24 +233,17 @@ namespace rit_dbconcepts
 								moviesInDb.Add( d.Item.Movie);
 							}
 						}
-					
 					} else {
+						System.Console.Out.WriteLine ( current.Address.City + ": " + current.Inventory.Count );
 						foreach( StockItem d in current.Inventory ){
 							moviesInDb.Add( d.Item.Movie);
 						}
 					}
 				} else if( incPublisher){
-					Publisher current = null;
-					foreach( Publisher p in DAL.getPublishers()){
-						if( p.Name.ToLower().Equals( this.publisher.Text.Trim ().ToLower())) {
-							current = p;
-						}
-					}
-					if( current == null){ return; } 
 					
-					moviesInDb = new List<Movie>( current.PublishedMovies );
+					moviesInDb = DAL.getMoviesByPublisher( this.publisher.Text.Trim());
 					
-				}
+				} 
 				
 				foreach( Movie m in moviesInDb){
 					results.Items.Add( m.ToString() );
@@ -297,6 +270,7 @@ namespace rit_dbconcepts
 			this.transaction.Enabled = false;
 			this.transaction.Click += delegate(object sender, EventArgs e) {
 				this.selectedMovie.Text = "Selected Movie: " + (String)this.results.SelectedItem;
+				this.selectedMovie.Visible = true;
 				tabs.SelectedTab = this.custLookup;
 			};
 
@@ -306,9 +280,7 @@ namespace rit_dbconcepts
             Lookup.Controls.Add (this.castCrewMember);
             Lookup.Controls.Add (this.genre);
             Lookup.Controls.Add (this.publisher);
-            foreach (CheckBox b in this.cBoxList) {
-                Lookup.Controls.Add (b);
-            }
+            
             Lookup.Controls.Add (this.results);
             Lookup.Controls.Add (this.submit);
 			Lookup.Controls.Add( this.infoButton);
@@ -339,45 +311,50 @@ namespace rit_dbconcepts
 			this.selectedMovie.Location = new Point (20, 10);
         	this.selectedMovie.Name = "SelectedMovieLabel";
         	this.selectedMovie.Size = new Size (200, 30);
+        	this.selectedMovie.Visible = false;
 
-            this.customer.Location = new Point (45, 50);
+            this.customer.Location = new Point (30, 50);
         	this.customer.Name = "CustomerField";
-        	this.customer.Size = new Size (640, 32);
+        	this.customer.Size = new Size (700, 32);
         	this.customer.Text = "Enter customer name";
         	this.customer.TabIndex = 1;
 
-            this.address.Location = new Point (45, 100);
+            this.address.Location = new Point (30, 100);
         	this.address.Name = "Address Field";
-        	this.address.Size = new Size (640, 32);
+        	this.address.Size = new Size (700, 32);
         	this.address.TabIndex = 2;
         	this.address.Text = "Enter an address to search";
 
-			this.cardNum.Location = new Point (45, 150);
+			this.cardNum.Location = new Point (30, 150);
         	this.cardNum.Name = "CardNum";
-        	this.cardNum.Size = new Size (640, 32);
+        	this.cardNum.Size = new Size (700, 32);
         	this.cardNum.TabIndex = 3;
         	this.cardNum.Text = "Enter the customers card number";
     
-            this.custResults.Location = new Point (40, 200);
+            this.custResults.Location = new Point (30, 200);
         	this.custResults.Name = "Results";
         	this.custResults.Size = new Size (700, 300);
         	this.custResults.SelectedValueChanged += delegate {
         		if (custResults.Items.Count > 0) {
         			this.custInfoButton.Enabled = true;
-        			this.custCheckIO.Enabled = true;
+        			this.custCheckIO.Enabled = true && selectedMovie.Visible;
         		} else {
         			this.custInfoButton.Enabled = false;
         			this.custCheckIO.Enabled = false;
-				}
-			};
+        		}
+        	};
+        	custResults.Items.Add ("Add a new customer");
 
             // CustSubmit
         	this.custSubmit.Location = new Point (250, 550);
         	this.custSubmit.Name = "CustSubmitButton";
         	this.custSubmit.TabIndex = 3;
         	this.custSubmit.Text = "Lookup";
+        		
+        		
         	this.custSubmit.Click += delegate(object sender, EventArgs e) {
-                Application.Exit (); 
+                
+				
             };
 			
 			// CustInfoButton
@@ -403,7 +380,8 @@ namespace rit_dbconcepts
 				Label message = new Label();
 				Button accept = new Button();
 								
-				message.Text = "Checked";
+				message.Text = this.selectedMovie.Text.Substring( 0, this.selectedMovie.Text.IndexOf(','));
+				
 				message.Location = new Point( 65, 5 );
 				message.Size = new Size(  100, 32);
 				
@@ -432,8 +410,6 @@ namespace rit_dbconcepts
 			CusInfo.Controls.Add (this.custInfoButton);
 			CusInfo.Controls.Add (this.custCheckIO);
 			
-			// TODO remove
-			custResults.Items.Add( "Smith, Bill");
 
             return CusInfo;
         }
@@ -441,10 +417,14 @@ namespace rit_dbconcepts
         public void infoPanel (String title, String selection)
         {
 
-            this.info = new Form ();
+            char[] delim = new char[ 2];
+			delim[ 0 ] = ',';  // commas and spaces
+			delim[ 1 ] = ' ';
+			
+			this.info = new Form ();
         	this.info.ClientSize = new Size (500, 610);
         	this.info.Text = selection;
-				
+    
 			Label infoPanelHeader = new Label ();
         	infoPanelHeader.Text = title + " Info";
         	infoPanelHeader.Location = new Point (200, 20);
@@ -485,9 +465,16 @@ namespace rit_dbconcepts
         	T5.Size = new Size (335, 32);
         	T5.Location = new Point (90, 250);
    
+			Label L6 = new Label ();
+        	L6.Location = new Point (30, 300);
+        	L6.Size = new Size (60, 32);
+        	TextBox T6 = new TextBox ();
+        	T6.Size = new Size (335, 32);
+        	T6.Location = new Point (90, 300);
+			
 			ListBox details = new ListBox ();
-        	details.Location = new Point (30, 300);
-        	details.Size = new Size (375, 300);
+        	details.Location = new Point (30, 350);
+        	details.Size = new Size (375, 250);
 			
 			if (title.ToLower ().Equals ("movie")) 
 			{
@@ -500,7 +487,7 @@ namespace rit_dbconcepts
         		info.Controls.Add (L2);
         		info.Controls.Add (T2);
    
-				L3.Text = "Release Date";
+				L3.Text = "Release Date (DD/MM/YYYY";
         		info.Controls.Add (L3);
         		info.Controls.Add (T3);
     
@@ -511,9 +498,15 @@ namespace rit_dbconcepts
 				L5.Text = "Cast/Crew";
 				info.Controls.Add (L5);
 				info.Controls.Add (T5);
+				
+				L6.Text = "Publisher";
+				info.Controls.Add( L6);
+				info.Controls.Add (T6);
+				
 			} else if( title.ToLower().Equals( "customer" )){
 				
 				L1.Text = "Name (Last/First)";
+				T1.Text = selection;
 				info.Controls.Add (L1);
 				info.Controls.Add (T1);
 				
@@ -525,6 +518,9 @@ namespace rit_dbconcepts
 				info.Controls.Add (L3);
 				info.Controls.Add (T3);
 				
+				L4.Text = "Card Expiration Date";
+				info.Controls.Add( L4 );
+				info.Controls.Add( T4 );
 			}
 			
 			
@@ -532,7 +528,38 @@ namespace rit_dbconcepts
 			addItem.Location = new Point( 420, 450);
 			addItem.Text = "Add";			
 			addItem.Click +=  delegate(object sender, EventArgs e) {
-				this.info.Dispose();
+				if( title.ToLower().Equals( "movie") ){
+					int year = int.Parse(T3.Text.Substring(6));
+					int month = int.Parse(T3.Text.Substring( 3, 2));
+					int day = int.Parse(T3.Text.Substring(0,2));
+					
+					
+					int numCastCrew = T5.Text.Split( delim).GetLength(1) / 3;
+					CastCrewMember [] cast = new CastCrewMember[ numCastCrew ];
+					
+					for( int i = 0; i < T5.Text.Split( delim).GetLength(1) / 3; i = i + 3){
+						cast[ i / 3] = new CastCrewMember( new Person( -1, T5.Text.Split( delim)[ i], 
+							T5.Text.Split( delim)[ i + 1 ]), 
+							T5.Text.Split( delim)[ i + 2]);
+					}
+					DAL.insertMovie( new Movie(-1, T1.Text, new DateTime( year,month, day), T4.Text.Split( delim ), cast));
+				} else if( title.ToLower().Equals("customer")) {
+					int year = int.Parse( T4.Text.Substring( 6 ));
+					int month = int.Parse( T4.Text.Substring( 3, 2 ));
+					int day = int.Parse( T4.Text.Substring( 0, 2 ));
+
+					String[] addressStr = T2.Text.Split( delim );
+					
+					String street = addressStr[ 0 ] + addressStr[ 1 ] + addressStr[ 2 ];
+					String city = addressStr[ 3 ];
+					String state = addressStr[ 4 ];
+					String zip = addressStr[ 5 ];
+					
+					DAL.insertCustomer( new Customer( new Person( -1, T1.Text.Substring( T1.Text.IndexOf(',')), T1.Text.Substring(0, T1.Text.IndexOf(','))), T3.Text, 
+							new DateTime( year,month, day), new Address(street, city, state, zip)));
+					
+				}
+				
 			};
 			this.info.Controls.Add( addItem );
 			this.info.Controls.Add( details);			
