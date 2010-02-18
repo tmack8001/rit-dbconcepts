@@ -25,6 +25,12 @@ namespace rit_dbconcepts
             connection = new MySqlConnection(conString);
         }
 
+        public List<Object> getCustomQuery(String query, Type objectType)
+        {
+            // do logic on the passed custom query information
+            return null;
+        }
+
         public List<Movie> getMovies()
         {
             List<Movie> retList = new List<Movie>();
