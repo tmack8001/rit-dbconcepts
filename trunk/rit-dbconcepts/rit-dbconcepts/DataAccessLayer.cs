@@ -1013,7 +1013,7 @@ namespace rit_dbconcepts
         private void updatePerson(Person person)
         {
             String queryStr = "UPDATE person" +
-                " SET first_name = '" + person.FirstName + "', last_name = '" + person.LastName + "'" +
+                " SET first_name = '" + person.FirstName + "', last_name = '" + person.LastName + "'," +
                 " WHERE person_id = " + person.Id;
 
             command = connection.CreateCommand();
