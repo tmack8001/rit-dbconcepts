@@ -996,7 +996,7 @@ namespace rit_dbconcepts
             {
                 String queryStr = "INSERT INTO person" +
                     " ( first_name, last_name ) VALUES ( '" + person.FirstName + "'," +
-                    " '" + person.LastName + "'";
+                    " '" + person.LastName + "' )";
 
                 command = connection.CreateCommand();
                 command.CommandText = queryStr;
