@@ -279,10 +279,12 @@ namespace rit_dbconcepts
 					} else {
 						moviesInDb = DAL.getMoviesByPublisher( this.publisher.Text.Trim());
 					}
-					
-				} else if( incGenre ){
-					moviesInDb = DAL.getMoviesByGenre( this.genre.Text );
-				} 
+
+                } else if (incGenre){
+                    moviesInDb = DAL.getMoviesByGenre(this.genre.Text);
+                } else{
+                    moviesInDb = DAL.getMovies();
+                }
 				
 				foreach( Movie m in moviesInDb){
 					results.Items.Add(m);
