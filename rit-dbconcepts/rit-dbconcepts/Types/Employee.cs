@@ -28,5 +28,10 @@ namespace rit_dbconcepts.Types
             get { return mHireDate; }
             set { mHireDate = value; }
         }
+
+        public override String ToString()
+        {
+            return FirstName + " " + LastName + ": " + Position;
+        }
     }
 }

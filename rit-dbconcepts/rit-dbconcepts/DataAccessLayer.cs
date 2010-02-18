@@ -204,6 +204,7 @@ namespace rit_dbconcepts
 
             connection.Open();
             Reader = command.ExecuteReader();
+            Reader.Read();
 
             retVal = TypeFactory.readCustomer(Reader);
 
@@ -289,6 +290,31 @@ namespace rit_dbconcepts
             return retList;
         }
 
+        public List<Employee> getEmployeesByPosition(String position)
+        {
+            List<Employee> retList = new List<Employee>();
+
+            String queryStr = "SELECT p.person_id, p.first_name, p.last_name, e.position, e.hire_date" +
+                " FROM person as p" +
+                " RIGHT OUTER JOIN employee as e ON e.person_id = p.person_id" +
+                " WHERE e.position like '%" + position + "%'";
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            Reader = command.ExecuteReader();
+
+            while (Reader.Read())
+            {
+                retList.Add(TypeFactory.readEmployee(Reader));
+            }
+
+            //some function in TypeFactor(Reader);
+            connection.Close();
+            return retList;
+        }
+
         public Employee getEmployeeById(int id)
         {
             Employee retVal = null;
@@ -303,6 +329,7 @@ namespace rit_dbconcepts
 
             connection.Open();
             Reader = command.ExecuteReader();
+            Reader.Read();
 
             retVal = TypeFactory.readEmployee(Reader);
 
@@ -371,14 +398,13 @@ namespace rit_dbconcepts
 
             connection.Open();
             Reader = command.ExecuteReader();
-
             Reader.Read();
+
             retVal = TypeFactory.readStore(Reader);
-            retVal.Inventory = new LinkedList<StockItem>(getInventoryById(Reader.GetOrdinal("store_id")));
-  
             //some function in TypeFactor(Reader);
             connection.Close();
 
+            retVal.Inventory = new LinkedList<StockItem>(getInventoryById(retVal.StoreId));
             return retVal;
         }
 
@@ -499,6 +525,8 @@ namespace rit_dbconcepts
 
             connection.Open();
             Reader = command.ExecuteReader();
+            Reader.Read();
+
             retVal = TypeFactory.readStore(Reader);
             
             //some function in TypeFactor(Reader);
@@ -680,6 +708,71 @@ namespace rit_dbconcepts
             return retVal;
         }
 
+        public DVD getAvailableDvdByMovieId(int id)
+        {
+            DVD retList = null;
+            int movie_id = 0;
+
+            String queryStr = "SELECT d.dvd_id, d.format, m.movie_id, dm.release_date " +
+                " FROM dvd as d, dvd_movie as dm, inventory as i , movie as m" +
+                " WHERE dm.dvd_id = d.dvd_id AND m.movie_id = " + id + " AND i.in_stock = 1 AND i.dvd_id = dm.dvd_id" +
+                " AND m.movie_id = dm.movie_id LIMIT 1";
+            
+            /*String queryStr = "SELECT d.dvd_id, d.format, m.movie_id, dm.release_date" +
+                " FROM dvd as d, dvd_movie as dm" +
+                " RIGHT OUTER JOIN movie as m ON m.movie_id = dm.movie_id" +
+                " RIGHT OUTER JOIN inventory as i ON i.dvd_id = d.dvd_id" +
+                " WHERE dm.dvd_id = d.dvd_id AND m.movie_id = " + id + " AND i.in_stock = 1 LIMIT 1";
+            */
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            Reader = command.ExecuteReader();
+
+            Reader.Read();
+
+            retList = TypeFactory.readDvd(Reader);
+            movie_id = Reader.GetInt16(Reader.GetOrdinal("movie_id"));
+            connection.Close();
+
+            retList.Movie = getMovieById(movie_id);
+
+            return retList;
+        }
+
+        public DVD getDvdByTransId(int id)
+        {
+            DVD retList = null;
+            int movie_id = 0;
+
+            String queryStr = "SELECT d.dvd_id, d.format, m.movie_id, dm.release_date " +
+                " FROM dvd as d, dvd_movie as dm, transaction as t" +
+                " WHERE dm.dvd_id = d.dvd_id AND t.dvd_id = " + id + " LIMIT 1";
+
+            /*String queryStr = "SELECT d.dvd_id, d.format, m.movie_id, dm.release_date" +
+                " FROM dvd as d, dvd_movie as dm" +
+                " RIGHT OUTER JOIN movie as m ON m.movie_id = dm.movie_id" +
+                " RIGHT OUTER JOIN inventory as i ON i.dvd_id = d.dvd_id" +
+                " WHERE dm.dvd_id = d.dvd_id AND m.movie_id = " + id + " AND i.in_stock = 1 LIMIT 1";
+            */
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            Reader = command.ExecuteReader();
+
+            Reader.Read();
+
+            retList = TypeFactory.readDvd(Reader);
+            movie_id = Reader.GetInt16(Reader.GetOrdinal("movie_id"));
+            connection.Close();
+
+            retList.Movie = getMovieById(movie_id);
+
+            return retList;
+        }
+
         public List<DVD> getDvdsByMovieId(int id)
         {
             List<DVD> retList = new List<DVD>();
@@ -765,6 +858,52 @@ namespace rit_dbconcepts
             connection.Open();
             Reader = command.ExecuteReader();
 
+            //some function in TypeFactor(Reader);
+            connection.Close();
+            return retVal;
+        }
+
+        public int getTransactionIdByCustomerMovie(int cust_id, int movie_id)
+        {
+            int retVal = -1;
+
+            String queryStr = "SELECT t.trans_id, t.dvd_id, t.customer_id" +
+                " FROM transaction as t, dvd_movie as dm" +
+                " WHERE dm.dvd_id = t.dvd_id AND dm.movie_id = " + movie_id + " AND t.customer_id = " + cust_id;
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            Reader = command.ExecuteReader();
+
+            if (Reader.Read())
+            {
+                retVal = Reader.GetInt16(Reader.GetOrdinal("trans_id"));
+            }
+            //some function in TypeFactor(Reader);
+            connection.Close();
+            return retVal;
+        }
+
+        public int getDvdIdByCustomerMovie(int cust_id, int movie_id)
+        {
+            int retVal = -1;
+
+            String queryStr = "SELECT dm.dvd_id, t.trans_id, t.dvd_id, t.customer_id" +
+                " FROM transaction as t, dvd_movie as dm" +
+                " WHERE dm.dvd_id = t.dvd_id AND dm.movie_id = " + movie_id + " AND t.customer_id = " + cust_id;
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            Reader = command.ExecuteReader();
+
+            if (Reader.Read())
+            {
+                retVal = Reader.GetInt16(Reader.GetOrdinal("dvd_id"));
+            }
             //some function in TypeFactor(Reader);
             connection.Close();
             return retVal;
@@ -902,7 +1041,7 @@ namespace rit_dbconcepts
                     " VALUES ( " + customer.Id + ", '" + customer.BillAddress.Street + "'," +
                     " '" + customer.BillAddress.City + "', '" + customer.BillAddress.State + "'," +
                     " '" + customer.BillAddress.ZipCode + "', '" + customer.CardNumber + "'," +
-                    " '" + customer.ExpDate.Date.ToString("d") + "' )";
+                    " '" + customer.ExpDate.Date.ToString("yyyy-MM-dd") + "' )";
 
                 command = connection.CreateCommand();
                 command.CommandText = queryStr;
@@ -995,7 +1134,7 @@ namespace rit_dbconcepts
                 String queryStr = "INSERT INTO employee" +
                     " ( person_id, position, hire_date )" +
                     " VALUES ( " + employee.Id + ", '" + employee.Position + "'," +
-                    " '" + employee.HireDate.Date.ToString("d") + "' )";
+                    " '" + employee.HireDate.Date.ToString("yyyy-MM-dd hh:mm:ss") + "' )";
 
                 command = connection.CreateCommand();
                 command.CommandText = queryStr;
@@ -1011,8 +1150,10 @@ namespace rit_dbconcepts
 
         private void updateEmployee(Employee employee)
         {
+            updatePerson(employee);
+
             String queryStr = "UPDATE employee" +
-                " SET position = " + employee.Position + ", hire_date = " + employee.HireDate +
+                " SET position = '" + employee.Position + "', hire_date = '" + employee.HireDate.ToString("yyyy-MM-dd HH:mm:ss") + "'"  +
                 " WHERE person_id = " + employee.Id;
 
             command = connection.CreateCommand();
@@ -1050,6 +1191,8 @@ namespace rit_dbconcepts
 
         public void updateCastAndCrew(CastCrewMember cast, Movie movie)
         {
+            updatePerson(cast);
+
             String queryStr = "UPDATE cast_and_crew" +
                 " SET job = '" + cast.Job + "'" +
                 " WHERE cac_id = " + cast.Id + " AND movie_id = " + movie.Id;
@@ -1209,27 +1352,42 @@ namespace rit_dbconcepts
 
         public int insertTransaction(Transaction transaction)
         {
-            int retVal = transaction.Id;
-            if (retVal >= 0)
+            /** Should be dynamic */
+            StockItem stockItem = null;
+            Store store = getStoreById(1);
+            foreach( StockItem item in store.Inventory ) {
+                if(item.Item.Id == transaction.DVD.Id)
+                    stockItem = item;
+            }
+            if (stockItem == null)
             {
-                updateTransaction(transaction);
+                throw new NotSupportedException();
             }
             else
             {
-                String queryStr = "INSERT INTO transaction" +
-                    " ( trans_id, dvd_id, cuatomer_id, trans_date )" +
-                    " VALUES ( " + transaction.Id + ", " + transaction.DVD.Id + "," +
-                    " " + transaction.Customer.Id + "' )";
-
-                command = connection.CreateCommand();
-                command.CommandText = queryStr;
-
-                connection.Open();
-                command.ExecuteNonQuery();
-                transaction.Id = (int)command.LastInsertedId;
-
-                connection.Close();
+                stockItem.IsInStock = (transaction.Id > 0);
             }
+
+            int retVal = transaction.Id;
+            if (retVal >= 0)
+            {
+                updateInventory(stockItem, store);
+            }
+
+            updateInventory(stockItem, store);
+            String queryStr = "INSERT INTO transaction" +
+                " ( dvd_id, customer_id )" +
+                " VALUES ( " + transaction.DVD.Id + "," +
+                " " + transaction.Customer.Id + " )";
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            command.ExecuteNonQuery();
+            transaction.Id = (int)command.LastInsertedId;
+
+            connection.Close();
             return retVal;
         }
 
@@ -1258,7 +1416,7 @@ namespace rit_dbconcepts
         {
             String queryStr = "UPDATE inventory" +
                 " SET store_id = " + store.StoreId + ", in_stock = " + inventory.IsInStock + ", " +
-                " price_per_day = " + inventory.PricePerDay +
+                " price_per_day = " + inventory.PricePerDay + "," +
                 " dvd_id = " + inventory.Item.Id +
                 " WHERE dvd_id = " + inventory.Item.Id;
 
