@@ -82,6 +82,31 @@ namespace rit_dbconcepts
             return retList;
         }
 
+        public List<Movie> getMoviesByPublisher(String publisherName)
+        {
+            List<Movie> retList = new List<Movie>();
+
+            String queryStr = "SELECT m.movie_id, m.title, m.genre, pm.distribution_date" +
+                " FROM movie AS m" +
+                " LEFT OUTER JOIN publisher_movie as pm ON pm.movie_id = m.movie_id" +
+                " LEFT OUTER JOIN publisher as p ON p.name = pm.publisher_name" +
+                " WHERE p.name like '%" + publisherName + "%'";
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            Reader = command.ExecuteReader();
+
+            while (Reader.Read())
+            {
+                retList.Add(TypeFactory.readMovie(Reader));
+            }
+            //some function in TypeFactor(Reader);
+            connection.Close();
+            return retList;
+        }
+
         public List<Movie> getMovieByTitle(String temp_title)
         {
             List<Movie> retList = new List<Movie>();
@@ -365,7 +390,7 @@ namespace rit_dbconcepts
             String queryStr = "SELECT s.store_id, s.street, s.city, s.state," +
                 " s.zipcode, s.date_opened" +
                 " FROM store as s" +
-                " WHERE s.city = '" + city + "'";
+                " WHERE s.city = '%" + city + "%'";
 
             command = connection.CreateCommand();
             command.CommandText = queryStr;
@@ -701,7 +726,7 @@ namespace rit_dbconcepts
             return retVal;
         }
         
-        /** Object INSERTS */
+        /** Object INSERTS and UPDATES */
 
         public int insertMovie(Movie movie, Publisher publisher)
         {
@@ -716,6 +741,11 @@ namespace rit_dbconcepts
                 insertPublisher(publisher, movie);
             }
             return retVal;
+        }
+
+        private object updateMovie(Movie movie, Publisher publisher)
+        {
+            throw new NotImplementedException();
         }
 
         public int insertMovie(Movie movie)
@@ -898,6 +928,26 @@ namespace rit_dbconcepts
             return publisher.Name;
         }
 
+        public void insertCastAndCrew(CastCrewMember cast, Movie movie)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void updateCastAndCrew(CastCrewMember cast, Movie movie)
+        {
+            String queryStr = "UPDATE cast_and_crew" +
+                " SET job = " + cast.Job +
+                " WHERE cac_id = " + cast.Id + " AND movie_id = " + movie.Id;
+
+            command = connection.CreateCommand();
+            command.CommandText = queryStr;
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            connection.Close();
+        }
+
         private void updatePublisher(Publisher publisher, Movie movie)
         {
             throw new NotImplementedException();
@@ -1038,32 +1088,10 @@ namespace rit_dbconcepts
             connection.Close();
         }
 
-        /** UPDATE STATEMENTS */
-
-        public void updateCastAndCrew(CastCrewMember cast, Movie movie)
-        {
-            String queryStr = "UPDATE cast_and_crew" +
-                " SET job = " + cast.Job +
-                " WHERE cac_id = " + cast.Id + " AND movie_id = " + movie.Id;
-
-            command = connection.CreateCommand();
-            command.CommandText = queryStr;
-
-            connection.Open();
-            command.ExecuteNonQuery();
-
-            connection.Close();
-        }
-
-        private object updateMovie(Movie movie, Publisher publisher)
-        {
-            throw new NotImplementedException();
-        }
-        
         public void updateInventory(StockItem inventory, Store store)
         {
             String queryStr = "UPDATE inventory" +
-                " SET store_id = "  + store.StoreId + ", in_stock = " + inventory.IsInStock + ", " +
+                " SET store_id = " + store.StoreId + ", in_stock = " + inventory.IsInStock + ", " +
                 " price_per_day = " + inventory.PricePerDay +
                 " dvd_id = " + inventory.Item.Id +
                 " WHERE dvd_id = " + inventory.Item.Id;
@@ -1076,6 +1104,5 @@ namespace rit_dbconcepts
 
             connection.Close();
         }
-
     }
 }
