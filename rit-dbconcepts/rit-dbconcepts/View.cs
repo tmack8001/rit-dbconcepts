@@ -769,7 +769,8 @@ namespace rit_dbconcepts
 			
 			Button addItem = new Button();
 			addItem.Location = new Point( 420, 450);
-            addItem.Text = selection == null ? "Add" : "Edit";			
+            addItem.Text = selection == null ? "Add" : "Edit";
+            addItem.Enabled = (title.ToLower().Equals("employee")) ? false : true;
 			addItem.Click +=  delegate(object sender, EventArgs e) {
 				if( title.ToLower().Equals( "movie") ){
 
